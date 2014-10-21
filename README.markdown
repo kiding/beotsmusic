@@ -33,14 +33,18 @@ I don't know, but you can get a clue from [SoundCleod](https://soundcloud.com/se
 
 ## Disclaimer
 
-__Beats Music__ doesn't support keyboard shortcuts unlike SoundCloud. That means, the method being used here is a bit more hackery than the predecessor, [SoundCleod](https://github.com/salomvary/soundcleod).
+__Beats Music__ the service itself doesn't support keyboard shortcuts unlike __SoundCloud__. That means, the method being used here is a bit more hackery than the predecessor, [SoundCleod](https://github.com/salomvary/soundcleod).
 
 Use at your own _higher_ risk. It might destroy the Earth. Or better don't use it.
 
 ## Credits
 
-__Forked by__ [Dongsung "Don" Kim](http://kiding.net)
+### BeotsMusic
 
-__Created by__ [Márton Salomváry](https://twitter.com/salomvary)
+Maintained by [Dongsung "Don" Kim](http://kiding.net)
+
+### SoundCleod
+
+Created by [Márton Salomváry](https://twitter.com/salomvary)
 
 and [SoundCleod contributors](https://github.com/salomvary/soundcleod/graphs/contributors)
