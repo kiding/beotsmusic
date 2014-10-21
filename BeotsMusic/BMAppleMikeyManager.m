@@ -3,13 +3,13 @@
 #import <IOKit/hid/IOHIDLib.h>
 #import <Carbon/Carbon.h>
 
-typedef enum : NSUInteger {
+typedef NS_ENUM(NSInteger, BMAppleMikeyCommand) {
     BMAppleMikeyPlayPause = 0,
     BMAppleMikeyNext,
     BMAppleMikeyPrevious,
     BMAppleMikeySoundUp,
     BMAppleMikeySoundDown
-} BMAppleMikeyCommand;
+};
 
 #pragma mark Private Declaration
 
