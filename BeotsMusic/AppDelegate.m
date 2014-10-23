@@ -380,13 +380,12 @@ id tmpHostWindow;
 + (BOOL)isBMURL:(NSURL *)url
 {
     if(url != nil) {
-        if([url host] != nil) {
-            NSString *host = [url host];
-            if([host isEqualToString:BMHost]
-               || [host isEqualToString:BMAccountHost]
-               || [host isEqualToString:[baseUrl host]]) {
-                return TRUE;
-            }
+        NSString *host = [url host];
+        NSString *path = [url path];
+        if([host isEqualToString:BMHost]
+           || ([host isEqualToString:BMAccountHost] && ([path isEqualToString:BMLoginPath] || [path isEqualToString:BMLogoutPath]))
+           || [host isEqualToString:[baseUrl host]]) {
+            return TRUE;
         }
     }
     return FALSE;
