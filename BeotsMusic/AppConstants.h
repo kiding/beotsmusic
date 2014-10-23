@@ -9,7 +9,12 @@
 #import <Foundation/Foundation.h>
 
 extern NSString *const BMHost;
+
 extern NSString *const BMAccountHost;
+extern NSString *const BMLoginPath;
+extern NSString *const BMLogoutPath;
+
 extern NSString *const BMFacebookHost;
 extern NSString *const BMTwitterHost;
+
 extern NSString *const BMApplicationDidPressSpaceBarKey;
