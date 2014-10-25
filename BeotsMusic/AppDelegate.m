@@ -53,6 +53,8 @@ id tmpHostWindow;
     } else
         NSLog(@"AppDelegate: mikeyManager failed to initalize.");
 
+    NSString *currentVersion = [[NSBundle mainBundle] infoDictionary][@"CFBundleShortVersionString"];
+    [webView setApplicationNameForUserAgent:[NSString stringWithFormat:@"BeotsMusic/%@", currentVersion ? currentVersion : @"1.0"]];
     [webView setMainFrameURL:[@"https://" stringByAppendingString:BMHost]];
 
     WebPreferences* prefs = [WebPreferences standardPreferences];
