@@ -15,8 +15,6 @@
 #import "BMAppleMikeyManager.h"
 #import "AppDelegate.h"
 
-extern NSURL *baseUrl;
-
 @interface AppDelegate : NSObject <NSApplicationDelegate, NSWindowDelegate, BMAppleMikeyManagerDelegate> {
     SPMediaKeyTap *keyTap;
     BMAppleMikeyManager *mikeyManager;

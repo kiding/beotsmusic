@@ -10,8 +10,6 @@
 #import "AppDelegate.h"
 
 NSString *const SCNavigateJS = @"history.replaceState(null, null, '%@');$(window).trigger('popstate')";
-NSURL *baseUrl = nil;
-
 
 @interface WebPreferences (WebPreferencesPrivate)
 - (void)_setLocalStorageDatabasePath:(NSString *)path;
@@ -55,14 +53,8 @@ id tmpHostWindow;
     } else
         NSLog(@"AppDelegate: mikeyManager failed to initalize.");
 
-    
-    baseUrl = [NSURL URLWithString:[[NSUserDefaults standardUserDefaults] stringForKey:@"BaseUrl"]];
-    if (baseUrl == nil) {
-        baseUrl = [NSURL URLWithString: [@"https://" stringByAppendingString:BMHost]];
-    }
+    [webView setMainFrameURL:[@"https://" stringByAppendingString:BMHost]];
 
-    [[webView mainFrame] loadRequest: [NSURLRequest requestWithURL:baseUrl]];
-    
     WebPreferences* prefs = [WebPreferences standardPreferences];
     
     [prefs setCacheModel:WebCacheModelPrimaryWebBrowser];
@@ -383,8 +375,7 @@ id tmpHostWindow;
         NSString *host = [url host];
         NSString *path = [url path];
         if([host isEqualToString:BMHost]
-           || ([host isEqualToString:BMAccountHost] && ([path isEqualToString:BMLoginPath] || [path isEqualToString:BMLogoutPath]))
-           || [host isEqualToString:[baseUrl host]]) {
+           || ([host isEqualToString:BMAccountHost] && ([path isEqualToString:BMLoginPath] || [path isEqualToString:BMLogoutPath]))) {
             return TRUE;
         }
     }
