@@ -173,8 +173,9 @@ id tmpHostWindow;
                 notification.title = info[0]; // track
                 notification.informativeText = info[1]; // artist
 
-                // Get the album image.
+                // Check if the OS can handle an image in a notification.
                 if([notification respondsToSelector:@selector(setContentImage:)]) {
+                    // Get the album image URL.
                     NSString *css = [webView stringByEvaluatingJavaScriptFromString:@"$('#t-art').css('background-image')"];
                     if(![css isEqualToString:@""]) {
                         NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"url\\s*\\(\\s*['\"]?\\s*(.+?)\\s*['\"]?\\s*\\)"
@@ -186,21 +187,28 @@ id tmpHostWindow;
                             NSURL *url = [NSURL URLWithString:[css substringWithRange:range]];
                             
                             NSURLRequest *request = [[NSURLRequest alloc] initWithURL:url cachePolicy:0 timeoutInterval:60];
-                            NSData *data = [NSURLConnection sendSynchronousRequest:request
-                                                                 returningResponse:nil
-                                                                             error:nil];
-                            if(data) {
-                                NSImage *image = [[NSImage alloc] initWithData:data];
-                                if(image) {
-                                    notification.contentImage = image;
-                                }
-                            }
+                            [NSURLConnection sendAsynchronousRequest:request
+                                                               queue:[NSOperationQueue mainQueue]
+                                                   completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
+                                                       // Make data an image, put it in the notification.
+                                                       if (!connectionError && data) {
+                                                           NSImage *image = [[NSImage alloc] initWithData:data];
+                                                           if(image) {
+                                                               notification.contentImage = image;
+                                                           }
+                                                       }
+
+                                                       // Deliver the notification.
+                                                       [defaultCenter deliverNotification:notification];
+                                                   }];
                         }
                     }
                 }
-
-                // Deliver the notification.
-                [defaultCenter deliverNotification:notification];
+                // It can't.
+                else {
+                    // Deliver the notification.
+                    [defaultCenter deliverNotification:notification];
+                }
             }
         }
     }
