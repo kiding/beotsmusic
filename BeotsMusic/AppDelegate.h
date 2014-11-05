@@ -41,8 +41,6 @@
 - (void)webView:(WebView *)sender runOpenPanelForFileButtonWithResultListener:(id < WebOpenPanelResultListener >)resultListener allowMultipleFiles:(BOOL)allowMultipleFiles;
 - (BOOL)webView:(WebView *)sender runJavaScriptConfirmPanelWithMessage:(NSString *)message initiatedByFrame:(WebFrame *)frame;
 
-- (void)receiveSleepNotification:(NSNotification*)note;
-
 - (IBAction)restoreWindow:(id)sender;
 - (IBAction)reload:(id)sender;
 - (IBAction)search:(id)sender;
@@ -58,6 +56,7 @@
 - (void)navigate:(NSString*)permalink;
 + (BOOL)isBMURL:(NSURL *)url;
 
+- (void)receiveSleepNotification:(NSNotification*)note;
 - (void)didPressSpaceBarKey:(NSNotification *)notification;
 
 - (void) mikeyDidPlayPause;

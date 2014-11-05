@@ -285,13 +285,6 @@ id tmpHostWindow;
         return NO;
 }
 
-- (void)receiveSleepNotification:(NSNotification*)note
-{
-    if([self isPlaying]) {
-        [self playPause];
-    }
-}
-
 - (void)mediaKeyTap:(SPMediaKeyTap*)keyTap receivedMediaKeyEvent:(NSEvent*)event;
 {
 	NSAssert([event type] == NSSystemDefined && [event subtype] == SPSystemDefinedEventMediaKeys, @"Unexpected NSEvent in mediaKeyTap:receivedMediaKeyEvent:");
@@ -393,7 +386,15 @@ id tmpHostWindow;
 }
 
 
-#pragma mark - Notifications
+#pragma mark - NSNotificationCenter Observers
+
+- (void)receiveSleepNotification:(NSNotification*)note
+{
+    if([self isPlaying]) {
+        [self playPause];
+    }
+}
+
 - (void)didPressSpaceBarKey:(NSNotification *)notification
 {
     NSEvent *event = (NSEvent *)notification.object;
