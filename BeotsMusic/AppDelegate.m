@@ -16,6 +16,14 @@ NSString *const SCNavigateJS = @"history.replaceState(null, null, '%@');$(window
 - (void) setLocalStorageEnabled: (BOOL) localStorageEnabled;
 @end
 
+/**
+ * http://stackoverflow.com/questions/19797841
+ * http://stackoverflow.com/questions/11676017
+ */
+@interface NSUserNotification (NSUserNotificationPrivate)
+- (void)set_identityImage:(NSImage *)image;
+@end
+
 @implementation AppDelegate
 
 @synthesize webView;
@@ -52,6 +60,12 @@ id tmpHostWindow;
         [mikeyManager startListening];
     } else
         NSLog(@"AppDelegate: mikeyManager failed to initalize.");
+    
+    if(NSClassFromString(@"NSUserNotificationCenter")) {
+        defaultCenter = [NSUserNotificationCenter defaultUserNotificationCenter];
+        [defaultCenter removeAllDeliveredNotifications];
+        defaultCenter.delegate = self;
+    }
 
     NSString *currentVersion = [[NSBundle mainBundle] infoDictionary][@"CFBundleShortVersionString"];
     [webView setApplicationNameForUserAgent:[NSString stringWithFormat:@"BeotsMusic/%@", currentVersion ? currentVersion : @"1.0"]];
@@ -162,19 +176,21 @@ id tmpHostWindow;
             title = [title stringByReplacingOccurrencesOfString:@"Song: " withString:@""];
             title = [title stringByReplacingOccurrencesOfString:@" | Beats Music" withString:@""];
             NSArray *info = [title componentsSeparatedByString:@" by "];
-            if (info.count == 2) {
-                NSUserNotificationCenter *defaultCenter = [NSUserNotificationCenter defaultUserNotificationCenter];
-                
+            if (info.count == 2 && defaultCenter) {
                 // Remove all delivered notifications.
                 [defaultCenter removeAllDeliveredNotifications];
                 
                 // Make a new notification.
                 NSUserNotification *notification = [[NSUserNotification alloc] init];
                 notification.title = info[0]; // track
-                notification.informativeText = info[1]; // artist
-
+                notification.subtitle = info[1]; // artist
+                notification.actionButtonTitle = @"Skip"; // Skip button
+                [notification setValue:@YES forKey:@"_showsButtons"]; // Force-show buttons
+                
                 // Check if the OS can handle an image in a notification.
-                if([notification respondsToSelector:@selector(setContentImage:)]) {
+                BOOL canAcceptIdentityImage = [notification respondsToSelector:@selector(set_identityImage:)];
+                BOOL canAcceptContentImage = [notification respondsToSelector:@selector(setContentImage:)];
+                if(canAcceptIdentityImage || canAcceptContentImage) {
                     // Get the album image URL.
                     NSString *css = [webView stringByEvaluatingJavaScriptFromString:@"$('#t-art').css('background-image')"];
                     if(![css isEqualToString:@""]) {
@@ -193,8 +209,11 @@ id tmpHostWindow;
                                                        // Make data an image, put it in the notification.
                                                        if (!connectionError && data) {
                                                            NSImage *image = [[NSImage alloc] initWithData:data];
-                                                           if(image) {
-                                                               notification.contentImage = image;
+                                                           
+                                                           if(canAcceptIdentityImage) {
+                                                               [notification set_identityImage:image];
+                                                           } else {
+                                                               [notification setContentImage:image];
                                                            }
                                                        }
 
@@ -416,6 +435,16 @@ id tmpHostWindow;
 - (void) mikeyDidPrevious
 {
     [self prev];
+}
+
+#pragma mark - NSUserNotificationCenterDelegate
+
+- (void)userNotificationCenter:(NSUserNotificationCenter *)center
+       didActivateNotification:(NSUserNotification *)notification
+{
+    if(notification.activationType == NSUserNotificationActivationTypeActionButtonClicked) {
+        [self next];
+    }
 }
 
 @end

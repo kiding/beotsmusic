@@ -15,9 +15,10 @@
 #import "BMAppleMikeyManager.h"
 #import "AppDelegate.h"
 
-@interface AppDelegate : NSObject <NSApplicationDelegate, NSWindowDelegate, BMAppleMikeyManagerDelegate> {
+@interface AppDelegate : NSObject <NSApplicationDelegate, NSWindowDelegate, BMAppleMikeyManagerDelegate, NSUserNotificationCenterDelegate> {
     SPMediaKeyTap *keyTap;
     BMAppleMikeyManager *mikeyManager;
+    NSUserNotificationCenter *defaultCenter;
 }
 
 @property (assign) IBOutlet NSWindow *window;
