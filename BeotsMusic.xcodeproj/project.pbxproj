@@ -10,14 +10,15 @@
 		2618AE0116803F1900EC2E15 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2618AE0016803F1900EC2E15 /* Carbon.framework */; };
 		263C2BA11677152500EF4792 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 263C2BA01677152500EF4792 /* Cocoa.framework */; };
 		2666D13717E3104A0071A8BA /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2666D13617E3104A0071A8BA /* Sparkle.framework */; };
-		2666D13917E310A20071A8BA /* Sparkle.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 2666D13617E3104A0071A8BA /* Sparkle.framework */; };
+		2666D13917E310A20071A8BA /* Sparkle.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 2666D13617E3104A0071A8BA /* Sparkle.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		26A0087116771DA5006FD03A /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26A0087016771DA5006FD03A /* WebKit.framework */; };
 		26B5794C167A58CD0034D295 /* NSObject+SPInvocationGrabbing.m in Sources */ = {isa = PBXBuildFile; fileRef = 26B5793A167A58CD0034D295 /* NSObject+SPInvocationGrabbing.m */; };
 		26B5794D167A58CD0034D295 /* SPMediaKeyTap.m in Sources */ = {isa = PBXBuildFile; fileRef = 26B5793C167A58CD0034D295 /* SPMediaKeyTap.m */; };
 		3A6AE3A317613C9900D67ADC /* DHSwipeClipView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A6AE39E17613C9900D67ADC /* DHSwipeClipView.m */; };
 		3A6AE3A417613C9900D67ADC /* DHSwipeIndicator.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A6AE3A017613C9900D67ADC /* DHSwipeIndicator.m */; };
 		3A6AE3A517613C9900D67ADC /* DHSwipeWebView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A6AE3A217613C9900D67ADC /* DHSwipeWebView.m */; };
-		DF57E20E18C389C800ADAB2E /* beotsmusic.iconset in Resources */ = {isa = PBXBuildFile; fileRef = DF57E20D18C389C800ADAB2E /* beotsmusic.iconset */; };
+		BEEB8E591A0EF5E7000F133F /* CustomStylesheet.css in Resources */ = {isa = PBXBuildFile; fileRef = BEEB8E581A0EF5E7000F133F /* CustomStylesheet.css */; };
+		BEEB8E5B1A0EFEEF000F133F /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BEEB8E5A1A0EFEEF000F133F /* Images.xcassets */; };
 		DF590B8A18C0E07900D0603C /* AppConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = DF590B7418C0E07900D0603C /* AppConstants.m */; };
 		DF590B8B18C0E07900D0603C /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = DF590B7618C0E07900D0603C /* AppDelegate.m */; };
 		DF590B8D18C0E07900D0603C /* dsa_pub.pem in Resources */ = {isa = PBXBuildFile; fileRef = DF590B7918C0E07900D0603C /* dsa_pub.pem */; };
@@ -67,7 +68,8 @@
 		3A6AE3A017613C9900D67ADC /* DHSwipeIndicator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DHSwipeIndicator.m; sourceTree = "<group>"; };
 		3A6AE3A117613C9900D67ADC /* DHSwipeWebView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DHSwipeWebView.h; sourceTree = "<group>"; };
 		3A6AE3A217613C9900D67ADC /* DHSwipeWebView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DHSwipeWebView.m; sourceTree = "<group>"; };
-		DF57E20D18C389C800ADAB2E /* beotsmusic.iconset */ = {isa = PBXFileReference; lastKnownFileType = folder.iconset; path = beotsmusic.iconset; sourceTree = "<group>"; };
+		BEEB8E581A0EF5E7000F133F /* CustomStylesheet.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = CustomStylesheet.css; sourceTree = "<group>"; };
+		BEEB8E5A1A0EFEEF000F133F /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		DF590B7318C0E07900D0603C /* AppConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppConstants.h; sourceTree = "<group>"; };
 		DF590B7418C0E07900D0603C /* AppConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppConstants.m; sourceTree = "<group>"; };
 		DF590B7518C0E07900D0603C /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -119,7 +121,6 @@
 				DFCFC5C7192F30DF00794B34 /* sound_up */,
 				263C2B9F1677152500EF4792 /* Frameworks */,
 				263C2B9D1677152500EF4792 /* Products */,
-				DF57E20D18C389C800ADAB2E /* beotsmusic.iconset */,
 			);
 			sourceTree = "<group>";
 		};
@@ -208,8 +209,10 @@
 				DF590B8618C0E07900D0603C /* UrlPrompt.xib */,
 				DF590B8718C0E07900D0603C /* UrlPromptController.h */,
 				DF590B8818C0E07900D0603C /* UrlPromptController.m */,
+				BEEB8E581A0EF5E7000F133F /* CustomStylesheet.css */,
 				DFCFC5CB192F310D00794B34 /* BMAppleMikeyManager.h */,
 				DFCFC5CC192F310D00794B34 /* BMAppleMikeyManager.m */,
+				BEEB8E5A1A0EFEEF000F133F /* Images.xcassets */,
 			);
 			path = BeotsMusic;
 			sourceTree = "<group>";
@@ -250,7 +253,7 @@
 		263C2B931677152500EF4792 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0500;
+				LastUpgradeCheck = 0610;
 				ORGANIZATIONNAME = "Márton Salomváry";
 			};
 			buildConfigurationList = 263C2B961677152500EF4792 /* Build configuration list for PBXProject "BeotsMusic" */;
@@ -276,7 +279,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DF57E20E18C389C800ADAB2E /* beotsmusic.iconset in Resources */,
+				BEEB8E5B1A0EFEEF000F133F /* Images.xcassets in Resources */,
+				BEEB8E591A0EF5E7000F133F /* CustomStylesheet.css in Resources */,
 				DF590B9118C0E07900D0603C /* LoginWindow.xib in Resources */,
 				DF590B8D18C0E07900D0603C /* dsa_pub.pem in Resources */,
 				DF590B9518C0E07900D0603C /* UrlPrompt.xib in Resources */,
@@ -393,6 +397,7 @@
 		263C2BBB1677152500EF4792 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				COMBINE_HIDPI_IMAGES = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -411,6 +416,7 @@
 		263C2BBC1677152500EF4792 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				COMBINE_HIDPI_IMAGES = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
