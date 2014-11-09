@@ -165,7 +165,12 @@ id tmpHostWindow;
     NSScrollView *mainScrollView = sender.mainFrame.frameView.documentView.enclosingScrollView;
     [mainScrollView setVerticalScrollElasticity:NSScrollElasticityNone];
     [mainScrollView setHorizontalScrollElasticity:NSScrollElasticityNone];
-}
+	
+	NSURL *url = [NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:@"CustomStylesheet" ofType: @"css"]];
+	webView.preferences.userStyleSheetLocation = url;
+	webView.preferences.userStyleSheetEnabled = YES;
+
+} 
 
 - (void)webView:(WebView *)sender didReceiveTitle:(NSString *)title forFrame:(WebFrame *)frame
 {

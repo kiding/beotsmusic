@@ -9,7 +9,7 @@
 
 #import "AppConstants.h"
 #import "BMCApplication.h"
-
+#import "AppDelegate.h"
 
 @implementation BMCApplication
 
@@ -20,7 +20,8 @@
         theEvent.keyCode == 49)
     {
         // Handle the space-bar, even if the window is closed
-        [[[NSWorkspace sharedWorkspace] notificationCenter] postNotificationName:BMApplicationDidPressSpaceBarKey object:theEvent];
+		[(AppDelegate *) [[NSApplication sharedApplication] delegate] playPause];
+        // [[[NSWorkspace sharedWorkspace] notificationCenter] postNotificationName:BMApplicationDidPressSpaceBarKey object:theEvent];
         return;
     }
 
