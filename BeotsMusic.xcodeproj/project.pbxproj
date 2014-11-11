@@ -88,6 +88,7 @@
 		DF590B8718C0E07900D0603C /* UrlPromptController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UrlPromptController.h; sourceTree = "<group>"; };
 		DF590B8818C0E07900D0603C /* UrlPromptController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UrlPromptController.m; sourceTree = "<group>"; };
 		DF77A8D5192B8E690045BE66 /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
+		DF8DACA31A122BC300B11219 /* compiler.jar */ = {isa = PBXFileReference; lastKnownFileType = archive.jar; path = compiler.jar; sourceTree = "<group>"; };
 		DFCFC5C8192F30DF00794B34 /* sound_up.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sound_up.h; sourceTree = "<group>"; };
 		DFCFC5C9192F30DF00794B34 /* sound_up.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = sound_up.m; sourceTree = "<group>"; };
 		DFCFC5CB192F310D00794B34 /* BMAppleMikeyManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BMAppleMikeyManager.h; sourceTree = "<group>"; };
@@ -120,6 +121,7 @@
 				263C2B9F1677152500EF4792 /* Frameworks */,
 				263C2B9D1677152500EF4792 /* Products */,
 				DF57E20D18C389C800ADAB2E /* beotsmusic.iconset */,
+				DF8DACA31A122BC300B11219 /* compiler.jar */,
 			);
 			sourceTree = "<group>";
 		};
@@ -230,9 +232,10 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 263C2BBA1677152500EF4792 /* Build configuration list for PBXNativeTarget "BeotsMusic" */;
 			buildPhases = (
+				263C2B9A1677152500EF4792 /* Resources */,
+				DF90484D1A0F9C6D00E021F5 /* ShellScript */,
 				263C2B981677152500EF4792 /* Sources */,
 				263C2B991677152500EF4792 /* Frameworks */,
-				263C2B9A1677152500EF4792 /* Resources */,
 				2666D13817E3107A0071A8BA /* CopyFiles */,
 			);
 			buildRules = (
@@ -287,6 +290,23 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		DF90484D1A0F9C6D00E021F5 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "COMPILER_NAME=\"compiler.jar\"\nCOMPILER_DIR=$SOURCE_ROOT\nCOMPILER_PATH=\"$COMPILER_DIR/$COMPILER_NAME\"\n\nDOWNLOAD_URL=\"http://dl.google.com/closure-compiler/compiler-latest.zip\"\nDOWNLOAD_PATH=\"$TEMP_DIR/closure-compiler.zip\"\n\n# Error and exit!\nerror_exit() {\n  # Error Message\n  echo $2\n    \n  # Error Code 2x\n  if [ $1 -ge 20 ] && [ $1 -lt 30 ]; then\n    echo \"Please acquire Closure Compiler manually from https://developers.google.com/closure/compiler/ and place compiler.jar at $COMPILER_PATH\"\n  # Erorr Code 1x\n  elif [ $1 -ge 10 ] && [ $1 -lt 20 ]; then\n    echo \"Please install JDK from http://www.oracle.com/technetwork/java/javase/downloads/\"\n  fi\n        \n  exit $1\n}\n\n# Check for Java.\nRES=$(java -version 2>&1)\nif [ $? -gt 0 ]; then\n  error_exit 10 \"Missing Java.\"\nfi\n\n# Check for Closure Compiler.\nif [ ! -f \"$COMPILER_PATH\" ]; then\n  # Download Closure Compiler.\n  echo \"Downloading Closure Compiler...\"\n  curl -s -L --connect-timeout 5 \"$DOWNLOAD_URL\" -o \"$DOWNLOAD_PATH\"\n  if [ $? -gt 0 ] || [ ! -f \"$DOWNLOAD_PATH\" ]; then\n    error_exit 20 \"Download failed.\"\n  fi\n\n  # Check if the file is ZIP.\n  RES=$(file -b --mime-type \"$DOWNLOAD_PATH\")\n  if [ $? -gt 0 ] || [ \"$RES\" != \"application/zip\" ]; then\n    error_exit 21 \"The downloaded file is not a ZIP file.\"\n  fi\n\n  # Unzip compiler.jar from the ZIP file.\n  unzip -qq \"$DOWNLOAD_PATH\" \"$COMPILER_NAME\" -d \"$COMPILER_DIR\"\n  if [ $? -gt 0 ]; then\n    error_exit 22 \"Failed to extract the compiler.\"\n  fi\nfi\n\n# Find all the JS files from Resources.\nJS_FILES=$(find \"$BUILT_PRODUCTS_DIR/$UNLOCALIZED_RESOURCES_FOLDER_PATH\" -name \"*.js\" -o -name \"*.JS\" -o -name \"*.Js\" -o -name \"*.jS\")\n\n# Process now!\nwhile read -r f; do\n  if [ -f \"$f\" ]; then\n    echo \"Compiling \"$(basename \"$f\")\"...\"\n\n    # Compile\n    java -jar \"$COMPILER_PATH\" --js \"$f\" --js_output_file \"$f.min.js\"\n    if [ $? -gt 0 ]; then\n      error_exit 30\n    fi\n\n    # Replace\n    mv \"$f.min.js\" \"$f\"\n    if [ $? -gt 1 ]; then\n      error_exit 31\n    fi\n  fi\ndone <<< \"$JS_FILES\"";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		263C2B981677152500EF4792 /* Sources */ = {
