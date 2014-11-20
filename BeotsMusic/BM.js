@@ -8,6 +8,74 @@
     return (el instanceof HTMLElement && typeof el.click == 'function') ? (el.click() || true) : false;
   }
 
+  /**
+   * @param {number} timestamp
+   * @return {number} - integer
+   * @description Calculates time interval since now. Negative number for past values.
+   */
+  function timeSinceNow(timestamp) {
+    return ~~(timestamp - new Date / 1e3);
+  }
+
+  /**
+   * @const
+   * @type {Array.<string>}
+   * @description A list of whitelisted cookie keys.
+   */
+  var validKeys = ['uuid', 'user_id', 'refresh_token', 'logged_in', 'expires_at', 'api_base_url', 'access_token'];
+
+  /**
+   * @return {Object}
+   * @description Parses the document cookies into an object.
+   */
+  function getCookies() {
+    var cookieRE = /(\S+?) *= *([^ ;]+)/,
+        cookieREg = new RegExp(cookieRE.source, 'g');
+
+    // Parse all the cookies.
+    var all = {}, some = {};
+    (window.document.cookie.match(cookieREg) || []).forEach(function(i) {
+      var item = i.match(cookieRE);
+      all[item[1]] = decodeURIComponent(item[2]);
+    });
+
+    // Filter through validKeys.
+    validKeys.forEach(function(i) {
+      if(all[i]) {
+        some[i] = all[i];
+      }
+    });
+
+    return some;
+  }
+
+  /**
+   * @param {Object} obj
+   * @param {number} expires_at - timestamp
+   * @description Sets the given obj into cookies with the given expiration time.
+   */
+  function setCookies(obj, expires_at) {
+    if (obj && expires_at) {
+      // Make max-age, suffix.
+      var maxAge = timeSinceNow(expires_at),
+          suffix = ';path=/;domain=.beatsmusic.com;max-age=' + maxAge + ';secure';
+
+      // Get the current cookies.
+      var coo = getCookies();
+
+      /*
+       * Along with filtering through validKeys,
+       * update all the accepted values with the given expiration time too.
+       */
+      validKeys.forEach(function(i) {
+        var value = obj[i] || coo[i];
+        if(value) {
+          window.document.cookie = i + '=' + encodeURIComponent(value) + suffix;
+        }
+      });
+    }
+  }
+
   /** @constructor */
   function BM() {
     // Keeping global functions. Don't forget to call/apply/bind these.
