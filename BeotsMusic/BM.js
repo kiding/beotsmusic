@@ -79,12 +79,69 @@
   /** @constructor */
   function BM() {
     // Keeping global functions. Don't forget to call/apply/bind these.
+    this._open = window.XMLHttpRequest.prototype.open;
     this._dispatchEvent = window.dispatchEvent;
 
     // Keeping global objects.
     this._localStorage = window.localStorage;
     this._history = window.history;
   };
+
+  /**
+   * @typedef {Object} ajax~settings
+   * @property {?string} type
+   * @property {string} url
+   * @property {?Object.<string, string>} data
+   * @property {?Object.<string, string>} headers
+   */
+
+  /**
+   * @param {ajax~settings} settings
+   * @return {?Object}
+   * @description Sends a synchronous XHR request and returns the response. nil if the request failed or the response is not JSON.
+   */
+  BM.prototype._ajax = function _ajax(settings) {
+    settings = settings || {};
+
+    if (!settings.url) {
+      return null;
+    }
+
+    var _open = this._open || window.XMLHttpRequest.prototype.open,
+        type = (settings.type && settings.type.toUpperCase()) || 'GET',
+        url = settings.url + '',
+        data = JSON.stringify(settings.data || undefined) || undefined,
+        headers = settings.headers || {},
+        request = new window.XMLHttpRequest;
+
+    // Necessary settings.
+    headers['Accept'] = 'application/json, text/javascript, */*; q=0.01';
+    if (data) {
+      headers['Content-Type'] = 'application/json';
+    }
+
+    // Open!
+    _open.call(request, type, url, false);
+
+    // Assign headers.
+    for(var key in headers) {
+      request.setRequestHeader(key, headers[key]);
+    }
+
+    // Send data.
+    request.send(data);
+
+    // Parse the response.
+    if (request.readyState == 4 && request.status == 200) {
+      try {
+        return JSON.parse(request.responseText);
+      } catch (e) {
+        return null;
+      }
+    } else {
+      return null;
+    }
+  }
 
   /** 
    * @return {boolean}
