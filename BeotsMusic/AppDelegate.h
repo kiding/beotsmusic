@@ -13,12 +13,14 @@
 #import "../SPMediaKeyTap/SPMediaKeyTap.h"
 #import "../DHSwipeWebView/DHSwipeWebView.h"
 #import "BMAppleMikeyManager.h"
+#import "BMJSBridge.h"
 #import "AppDelegate.h"
 
 @interface AppDelegate : NSObject <NSApplicationDelegate, NSWindowDelegate, BMAppleMikeyManagerDelegate, NSUserNotificationCenterDelegate> {
     SPMediaKeyTap *keyTap;
     BMAppleMikeyManager *mikeyManager;
     NSUserNotificationCenter *defaultCenter;
+    BMJSBridge *bmJS;
 }
 
 @property (assign) IBOutlet NSWindow *window;

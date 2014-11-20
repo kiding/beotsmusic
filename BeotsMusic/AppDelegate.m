@@ -9,8 +9,6 @@
 #import "AppConstants.h"
 #import "AppDelegate.h"
 
-NSString *const SCNavigateJS = @"history.replaceState(null, null, '%@');$(window).trigger('popstate')";
-
 @interface WebPreferences (WebPreferencesPrivate)
 - (void)_setLocalStorageDatabasePath:(NSString *)path;
 - (void) setLocalStorageEnabled: (BOOL) localStorageEnabled;
@@ -66,6 +64,9 @@ id tmpHostWindow;
         [defaultCenter removeAllDeliveredNotifications];
         defaultCenter.delegate = self;
     }
+    
+    bmJS = [[BMJSBridge alloc] init];
+    bmJS.webFrame = [webView mainFrame];
 
     NSString *currentVersion = [[NSBundle mainBundle] infoDictionary][@"CFBundleShortVersionString"];
     [webView setApplicationNameForUserAgent:[NSString stringWithFormat:@"BeotsMusic/%@", currentVersion ? currentVersion : @"1.0"]];
@@ -346,17 +347,17 @@ id tmpHostWindow;
 
 - (IBAction)search:(id)sender
 {
-    [webView stringByEvaluatingJavaScriptFromString:@"$('.menu_item--search').click()"];
+    [bmJS callMethod:@"search"];
 }
 
 - (IBAction)love:(id)sender
 {
-    [webView stringByEvaluatingJavaScriptFromString:@"$('#t-love').click()"];
+    [bmJS callMethod:@"love"];
 }
 
 - (IBAction)hate:(id)sender
 {
-    [webView stringByEvaluatingJavaScriptFromString:@"$('#t-hate').click()"];
+    [bmJS callMethod:@"hate"];
 }
 
 - (IBAction)addToMyLibrary:(id)sender
@@ -366,17 +367,17 @@ id tmpHostWindow;
 
 - (void)next
 {
-    [webView stringByEvaluatingJavaScriptFromString:@"$('#t-next').click()"];
+    [bmJS callMethod:@"next"];
 }
 
 - (void)prev
 {
-    [webView stringByEvaluatingJavaScriptFromString:@"$('#t-prev').click()"];
+    [bmJS callMethod:@"prev"];
 }
 
 - (void)playPause
 {
-    [webView stringByEvaluatingJavaScriptFromString:@"$('#t-play').click()"];
+    [bmJS callMethod:@"playPause"];
 }
 
 - (BOOL)isPlaying
@@ -387,8 +388,7 @@ id tmpHostWindow;
 
 - (void)navigate:(NSString*)permalink
 {
-    NSString *js = [NSString stringWithFormat:SCNavigateJS, permalink];
-    [webView stringByEvaluatingJavaScriptFromString:js];
+    [bmJS callMethod:@"navigateTo" withArguments:@[permalink]];
 }
 
 + (BOOL)isBMURL:(NSURL *)url

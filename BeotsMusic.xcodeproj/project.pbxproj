@@ -31,6 +31,8 @@
 		DF590B9518C0E07900D0603C /* UrlPrompt.xib in Resources */ = {isa = PBXBuildFile; fileRef = DF590B8618C0E07900D0603C /* UrlPrompt.xib */; };
 		DF590B9618C0E07900D0603C /* UrlPromptController.m in Sources */ = {isa = PBXBuildFile; fileRef = DF590B8818C0E07900D0603C /* UrlPromptController.m */; };
 		DF77A8D6192B8E690045BE66 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DF77A8D5192B8E690045BE66 /* IOKit.framework */; };
+		DF8DACB01A14ABE600B11219 /* BM.js in Resources */ = {isa = PBXBuildFile; fileRef = DF8DACAD1A14ABE600B11219 /* BM.js */; };
+		DF8DACB11A14ABE600B11219 /* BMJSBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = DF8DACAF1A14ABE600B11219 /* BMJSBridge.m */; };
 		DFCFC5CA192F30DF00794B34 /* sound_up.m in Sources */ = {isa = PBXBuildFile; fileRef = DFCFC5C9192F30DF00794B34 /* sound_up.m */; };
 		DFCFC5CD192F310D00794B34 /* BMAppleMikeyManager.m in Sources */ = {isa = PBXBuildFile; fileRef = DFCFC5CC192F310D00794B34 /* BMAppleMikeyManager.m */; };
 /* End PBXBuildFile section */
@@ -89,6 +91,9 @@
 		DF590B8818C0E07900D0603C /* UrlPromptController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UrlPromptController.m; sourceTree = "<group>"; };
 		DF77A8D5192B8E690045BE66 /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
 		DF8DACA31A122BC300B11219 /* compiler.jar */ = {isa = PBXFileReference; lastKnownFileType = archive.jar; path = compiler.jar; sourceTree = "<group>"; };
+		DF8DACAD1A14ABE600B11219 /* BM.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = BM.js; sourceTree = "<group>"; };
+		DF8DACAE1A14ABE600B11219 /* BMJSBridge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BMJSBridge.h; sourceTree = "<group>"; };
+		DF8DACAF1A14ABE600B11219 /* BMJSBridge.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BMJSBridge.m; sourceTree = "<group>"; };
 		DFCFC5C8192F30DF00794B34 /* sound_up.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sound_up.h; sourceTree = "<group>"; };
 		DFCFC5C9192F30DF00794B34 /* sound_up.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = sound_up.m; sourceTree = "<group>"; };
 		DFCFC5CB192F310D00794B34 /* BMAppleMikeyManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BMAppleMikeyManager.h; sourceTree = "<group>"; };
@@ -212,6 +217,9 @@
 				DF590B8818C0E07900D0603C /* UrlPromptController.m */,
 				DFCFC5CB192F310D00794B34 /* BMAppleMikeyManager.h */,
 				DFCFC5CC192F310D00794B34 /* BMAppleMikeyManager.m */,
+				DF8DACAD1A14ABE600B11219 /* BM.js */,
+				DF8DACAE1A14ABE600B11219 /* BMJSBridge.h */,
+				DF8DACAF1A14ABE600B11219 /* BMJSBridge.m */,
 			);
 			path = BeotsMusic;
 			sourceTree = "<group>";
@@ -286,6 +294,7 @@
 				DF590B8E18C0E07900D0603C /* Credits.rtf in Resources */,
 				DF590B8F18C0E07900D0603C /* InfoPlist.strings in Resources */,
 				DF590B9018C0E07900D0603C /* MainMenu.xib in Resources */,
+				DF8DACB01A14ABE600B11219 /* BM.js in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -322,6 +331,7 @@
 				3A6AE3A417613C9900D67ADC /* DHSwipeIndicator.m in Sources */,
 				DF590B9418C0E07900D0603C /* BMCApplication.m in Sources */,
 				DFCFC5CD192F310D00794B34 /* BMAppleMikeyManager.m in Sources */,
+				DF8DACB11A14ABE600B11219 /* BMJSBridge.m in Sources */,
 				DF590B9218C0E07900D0603C /* main.m in Sources */,
 				DF590B9618C0E07900D0603C /* UrlPromptController.m in Sources */,
 				DF590B9318C0E07900D0603C /* PopupController.m in Sources */,
