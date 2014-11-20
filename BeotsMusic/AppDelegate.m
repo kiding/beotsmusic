@@ -382,8 +382,7 @@ id tmpHostWindow;
 
 - (BOOL)isPlaying
 {
-    NSString *res = [webView stringByEvaluatingJavaScriptFromString:@"($ && $('.playing')[0] && localStorage && localStorage.player && /\"playing\"\\s*:\\s*true/.test(localStorage.player) && /\"paused\"\\s*:\\s*false/.test(localStorage.player)) ? true : false"];
-    return res && [res isEqualToString:@"true"];
+    return (__bridge CFBooleanRef)[bmJS callMethod:@"isPlaying"] == kCFBooleanTrue;;
 }
 
 - (void)navigate:(NSString*)permalink

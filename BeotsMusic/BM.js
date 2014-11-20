@@ -68,6 +68,31 @@
 
   /**
    * @return {boolean}
+   * @description Checks if the player is playing.
+   */
+  BM.prototype.isPlaying = function isPlaying() {
+    // If there's no .transport, the player is not initialized yet.
+    if (!window.document.getElementsByClassName('transport').length) {
+      return false;
+    }
+
+    // If there is .transport but also .transport--hidden, the player never played anything yet.
+    if (window.document.getElementsByClassName('transport--hidden').length) {
+      return false;
+    }
+
+    // Check localStorage for status.
+    try {
+      var player = JSON.parse(this._localStorage.player);
+    } catch (e) {
+      return false;
+    }
+
+    return !!(player.playing && !player.paused);
+  };
+
+  /**
+   * @return {boolean}
    * @description Replaces history state to the given URL.
    */
   BM.prototype.navigateTo = function navigateTo(url) {
