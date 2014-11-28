@@ -362,7 +362,9 @@ id tmpHostWindow;
 
 - (IBAction)addToMyLibrary:(id)sender
 {
-    [webView stringByEvaluatingJavaScriptFromString:@"$('.transport__context .add_to_my_music').click()"];
+    if ((__bridge CFBooleanRef)[bmJS callMethod:@"addToMyLibrary"] != kCFBooleanTrue) {
+        NSBeginCriticalAlertSheet(@"There was an error adding the current track to your library.", @"Retry", @"Cancel", NULL, window, self, NULL, @selector(sheetDidDismiss:returnCode:contextInfo:), NULL, @"Please try again.");
+    }
 }
 
 - (void)next
@@ -443,6 +445,15 @@ id tmpHostWindow;
 {
     if(notification.activationType == NSUserNotificationActivationTypeActionButtonClicked) {
         [self next];
+    }
+}
+
+#pragma mark - NSBeginAlertSheet Modal Delegate
+
+- (void) sheetDidDismiss:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void  *)contextInfo
+{
+    if (returnCode == NSAlertDefaultReturn) {
+        [self addToMyLibrary:nil];
     }
 }
 

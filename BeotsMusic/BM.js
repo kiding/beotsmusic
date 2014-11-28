@@ -191,6 +191,60 @@
     return click(window.document.getElementById('t-play'));
   };
 
+  /** 
+   * @return {boolean}
+   * @description Adds the current track to My Library by explicitly calling Beats Music API.
+   */
+  BM.prototype.addToMyLibrary = function addToMyLibrary() {
+    var _this = this;
+
+    // Parse cookie.
+    var coo = getCookies();
+
+    // Get track ID.
+    try {
+      var tid = JSON.parse(this._localStorage.player).trackId;
+    } catch (e) {
+      return false;
+    }
+
+    // Do the AJAX.
+    if (tid && coo.user_id && coo.access_token) {
+      var succeed = false, max = 15, curr = 0; // Retry count.
+      
+      var fire = function() {
+        var prefix = coo.api_base_url || 'https://api.beatsmusic.com/api';
+
+        _this._ajax({url: prefix}); // Pre-flight. More details at issue #10.
+
+        var res = _this._ajax({
+          type: 'PUT',
+          url: prefix + '/users/' + coo.user_id + '/mymusic/' + tid,
+          data: {id: tid},
+          headers: {Authorization: 'Bearer ' + coo.access_token}
+        });
+
+        // Success!
+        if (res && res.code == 'OK') {
+          succeed = true;
+        }
+        // Failed, retry!
+        else {
+          curr++;
+          if (curr < max) {
+            fire();
+          }
+        }
+      };
+
+      fire(); // Synchronous request.
+
+      return succeed;
+    } else {
+      return false;
+    }
+  };
+
   /**
    * @return {boolean}
    * @description Checks if the player is playing.

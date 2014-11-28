@@ -65,4 +65,6 @@
 - (void) mikeyDidPlayPause;
 - (void) mikeyDidNext;
 - (void) mikeyDidPrevious;
+
+- (void) sheetDidDismiss:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void  *)contextInfo;
 @end
