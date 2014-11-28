@@ -145,6 +145,95 @@
 
   /** 
    * @return {boolean}
+   * @description Synchronously refreshes login tokens by explicitly calling Beats Music API.
+   */
+  BM.prototype.refreshTokens = function refreshTokens() {
+    var _this = this;
+
+    // Get the existing cookies.
+    var obj = getCookies();
+
+    // If tokens are already expired, give up.
+    if (obj.expires_at && timeSinceNow(obj.expires_at) <= 0) {
+      return false;
+    }
+
+    // Is refresh_token available?
+    if (!obj.refresh_token) {
+      return false;
+    }
+
+    // Refresh the token.
+    var succeed = false, max = 15, curr = 0; // Retry count.
+
+    var fire = function() {
+      var res = _this._ajax({
+        type: 'POST',
+        url: (obj.api_base_url || 'https://api.beatsmusic.com/api') + '/auth/tokens/refresh',
+        data: {refresh_token: obj.refresh_token},
+        headers: {Authorization: 'Bearer ' + obj.refresh_token}
+      });
+
+      // Success!
+      if (res && res.code == 'OK') {
+        obj = res.data; // Assign new tokens to obj.
+        succeed = true;
+      }
+      // Failed, retry!
+      else {
+        curr++;
+        if (curr < max) {
+          fire();
+        }
+      }
+    };
+
+    fire(); // Synchronous request.
+
+    // Save obj with its expiration time.
+    setCookies(obj, obj.expires_at);
+
+    return succeed;
+  };
+
+  /** 
+   * @return {boolean} 
+   * @description Starts listening to 'refresh' API call.
+   */
+  BM.prototype.listenForTokens = function listenForTokens() {
+    var _this = this;
+
+    // Check if this function is already called.
+    if (this._isListeningToRefresh) {
+      return false;
+    } else {
+      this._isListeningToRefresh = true;
+    }
+
+    // Construct a new function and replace it.
+    window.XMLHttpRequest.prototype.open = function open() {
+      // Assign another onload event.
+      this.addEventListener('load', function() {
+        var res = JSON.parse(this.responseText);
+        // Set cookie for refresh requests.
+        if (res.code == 'OK'
+            && res.data
+            && res.data.expires_at * 1e3 > new Date
+            && res.data.refresh_token
+            && res.data.access_token) {
+          setCookies(res.data, res.data.expires_at);
+        }
+      });
+
+      // Continue and return.
+      return _this._open.apply(this, arguments);
+    };
+
+    return true;
+  };
+
+  /** 
+   * @return {boolean}
    * @description Clicks the search button.
    */
   BM.prototype.search = function search() {

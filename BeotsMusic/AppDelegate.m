@@ -153,6 +153,13 @@ id tmpHostWindow;
     if(mikeyManager && mikeyManager.isListening) {
         [mikeyManager stopListening];
     }
+
+    // Renew tokens right before the app terminates.
+    if ([bmJS callMethod:@"refreshTokens"]) {
+        NSLog(@"New tokens are saved! You won't need to login again in 24 hours.");
+    } else {
+        NSLog(@"Failed to refresh tokens. You probably will need to login again.");
+    }
 }
 
 - (WebView *)webView:(WebView *)sender createWebViewWithRequest:(NSURLRequest *)request
@@ -231,6 +238,14 @@ id tmpHostWindow;
                 }
             }
         }
+    }
+}
+
+- (void)webView:(WebView *)sender didClearWindowObject:(WebScriptObject *)windowObject forFrame:(WebFrame *)frame
+{
+    if (frame == [webView mainFrame]) {
+        // Listen for new tokens right after JS context is ready.
+        [bmJS callMethod:@"listenForTokens"];
     }
 }
 
