@@ -32,7 +32,7 @@ Some Rights Reserved.</string>
 	<key>NSMainNibFile</key>
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>
-	<string>BMCApplication</string>
+	<string>BMApplication</string>
 	<key>SUFeedURL</key>
 	<string>https://raw.github.com/kiding/beotsmusic/master/appcast.xml</string>
 	<key>SUPublicDSAKeyFile</key>

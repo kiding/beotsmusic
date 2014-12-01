@@ -1,17 +1,8 @@
-//
-//  SCDApplication.m
-//  SoundCleod
-//
-//  Created by Rafif Yalda on 2013/06/05.
-//  Copyright (c) 2013 Rafif Yalda. All rights reserved.
-//
-
-
 #import "AppConstants.h"
-#import "BMCApplication.h"
+#import "BMApplication.h"
 
 
-@implementation BMCApplication
+@implementation BMApplication
 
 
 - (void)sendEvent:(NSEvent *)theEvent

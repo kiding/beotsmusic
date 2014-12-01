@@ -27,7 +27,7 @@
 		DF590B9118C0E07900D0603C /* LoginWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = DF590B8018C0E07900D0603C /* LoginWindow.xib */; };
 		DF590B9218C0E07900D0603C /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = DF590B8118C0E07900D0603C /* main.m */; };
 		DF590B9318C0E07900D0603C /* PopupController.m in Sources */ = {isa = PBXBuildFile; fileRef = DF590B8318C0E07900D0603C /* PopupController.m */; };
-		DF590B9418C0E07900D0603C /* BMCApplication.m in Sources */ = {isa = PBXBuildFile; fileRef = DF590B8518C0E07900D0603C /* BMCApplication.m */; };
+		DF590B9418C0E07900D0603C /* BMApplication.m in Sources */ = {isa = PBXBuildFile; fileRef = DF590B8518C0E07900D0603C /* BMApplication.m */; };
 		DF590B9518C0E07900D0603C /* UrlPrompt.xib in Resources */ = {isa = PBXBuildFile; fileRef = DF590B8618C0E07900D0603C /* UrlPrompt.xib */; };
 		DF590B9618C0E07900D0603C /* UrlPromptController.m in Sources */ = {isa = PBXBuildFile; fileRef = DF590B8818C0E07900D0603C /* UrlPromptController.m */; };
 		DF77A8D6192B8E690045BE66 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DF77A8D5192B8E690045BE66 /* IOKit.framework */; };
@@ -84,8 +84,8 @@
 		DF590B8118C0E07900D0603C /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		DF590B8218C0E07900D0603C /* PopupController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PopupController.h; sourceTree = "<group>"; };
 		DF590B8318C0E07900D0603C /* PopupController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PopupController.m; sourceTree = "<group>"; };
-		DF590B8418C0E07900D0603C /* BMCApplication.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BMCApplication.h; sourceTree = "<group>"; };
-		DF590B8518C0E07900D0603C /* BMCApplication.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BMCApplication.m; sourceTree = "<group>"; };
+		DF590B8418C0E07900D0603C /* BMApplication.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BMApplication.h; sourceTree = "<group>"; };
+		DF590B8518C0E07900D0603C /* BMApplication.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BMApplication.m; sourceTree = "<group>"; };
 		DF590B8618C0E07900D0603C /* UrlPrompt.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = UrlPrompt.xib; sourceTree = "<group>"; };
 		DF590B8718C0E07900D0603C /* UrlPromptController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UrlPromptController.h; sourceTree = "<group>"; };
 		DF590B8818C0E07900D0603C /* UrlPromptController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UrlPromptController.m; sourceTree = "<group>"; };
@@ -210,8 +210,8 @@
 				DF590B8118C0E07900D0603C /* main.m */,
 				DF590B8218C0E07900D0603C /* PopupController.h */,
 				DF590B8318C0E07900D0603C /* PopupController.m */,
-				DF590B8418C0E07900D0603C /* BMCApplication.h */,
-				DF590B8518C0E07900D0603C /* BMCApplication.m */,
+				DF590B8418C0E07900D0603C /* BMApplication.h */,
+				DF590B8518C0E07900D0603C /* BMApplication.m */,
 				DF590B8618C0E07900D0603C /* UrlPrompt.xib */,
 				DF590B8718C0E07900D0603C /* UrlPromptController.h */,
 				DF590B8818C0E07900D0603C /* UrlPromptController.m */,
@@ -329,7 +329,7 @@
 				3A6AE3A317613C9900D67ADC /* DHSwipeClipView.m in Sources */,
 				DFCFC5CA192F30DF00794B34 /* sound_up.m in Sources */,
 				3A6AE3A417613C9900D67ADC /* DHSwipeIndicator.m in Sources */,
-				DF590B9418C0E07900D0603C /* BMCApplication.m in Sources */,
+				DF590B9418C0E07900D0603C /* BMApplication.m in Sources */,
 				DFCFC5CD192F310D00794B34 /* BMAppleMikeyManager.m in Sources */,
 				DF8DACB11A14ABE600B11219 /* BMJSBridge.m in Sources */,
 				DF590B9218C0E07900D0603C /* main.m in Sources */,
