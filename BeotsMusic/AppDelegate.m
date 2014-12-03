@@ -155,7 +155,7 @@ id tmpHostWindow;
     }
 
     // Renew tokens right before the app terminates.
-    if ([bmJS callMethod:@"refreshTokens"]) {
+    if ((__bridge CFBooleanRef)[bmJS callMethod:@"refreshTokens"] == kCFBooleanTrue) {
         NSLog(@"New tokens are saved! You won't need to login again in 24 hours.");
     } else {
         NSLog(@"Failed to refresh tokens. You probably will need to login again.");
