@@ -53,10 +53,14 @@
     }
     
     // Is _object available to use?
-    if (!_object || [_object JSObject] == NULL) {
+    if (!(_object && [_object JSObject])) {
         // No, so evaluate _script and get the object.
-        _object = [[_webFrame windowObject] evaluateWebScript:_script];
-        NSAssert1([_object isKindOfClass:[WebScriptObject class]], @"An unexpected value %@ was returned by _script", _object);
+        id obj = [[_webFrame windowObject] evaluateWebScript:_script];
+        if ([obj isKindOfClass:[WebScriptObject class]]) {
+            _object = obj;
+        } else {
+            NSAssert1(YES, @"An unexpected value %@ was returned by the script", _object);
+        }
     }
 
     // Call the method and return.
