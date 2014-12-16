@@ -15,9 +15,9 @@ typedef enum : NSUInteger {
 
 @interface BMAppleMikeyManager ()
 {
-    IOHIDManagerRef dummyManager;
-    IOHIDManagerRef valueManager;
-    NSTimer *secureTimer;
+    IOHIDManagerRef _dummyManager;
+    IOHIDManagerRef _valueManager;
+    NSTimer *_secureTimer;
 }
 
 - (void) dealloc;
@@ -117,51 +117,51 @@ static void valueCallback(void *                  context,
 
 - (void) startDummyManager
 {
-    dummyManager = IOHIDManagerCreate(kCFAllocatorDefault, kIOHIDOptionsTypeNone);
-    if (IOHIDManagerOpen(dummyManager, kIOHIDOptionsTypeNone) != kIOReturnSuccess) {
+    _dummyManager = IOHIDManagerCreate(kCFAllocatorDefault, kIOHIDOptionsTypeNone);
+    if (IOHIDManagerOpen(_dummyManager, kIOHIDOptionsTypeNone) != kIOReturnSuccess) {
         NSLog(@"BMAppleMikeyManager: Failed to open dummyManager.");
     } else {
-        IOHIDManagerSetDeviceMatching(dummyManager, IOServiceNameMatching("AppleMikeyHIDDriver"));
-        IOHIDManagerScheduleWithRunLoop(dummyManager, CFRunLoopGetCurrent(), kCFRunLoopDefaultMode);
-        IOHIDManagerRegisterInputValueCallback(dummyManager, dummyCallback, (__bridge void *)self);
+        IOHIDManagerSetDeviceMatching(_dummyManager, IOServiceNameMatching("AppleMikeyHIDDriver"));
+        IOHIDManagerScheduleWithRunLoop(_dummyManager, CFRunLoopGetCurrent(), kCFRunLoopDefaultMode);
+        IOHIDManagerRegisterInputValueCallback(_dummyManager, dummyCallback, (__bridge void *)self);
     }
 }
 
 - (void) stopDummyManager
 {
-    IOHIDManagerClose(dummyManager, kIOHIDOptionsTypeNone);
-    CFRelease(dummyManager);
-    dummyManager = NULL;
+    IOHIDManagerClose(_dummyManager, kIOHIDOptionsTypeNone);
+    CFRelease(_dummyManager);
+    _dummyManager = NULL;
 }
 
 - (void) startValueManager
 {
-    valueManager = IOHIDManagerCreate(kCFAllocatorDefault, kIOHIDOptionsTypeNone);
-    if (IOHIDManagerOpen(valueManager, kIOHIDOptionsTypeSeizeDevice) != kIOReturnSuccess) {
+    _valueManager = IOHIDManagerCreate(kCFAllocatorDefault, kIOHIDOptionsTypeNone);
+    if (IOHIDManagerOpen(_valueManager, kIOHIDOptionsTypeSeizeDevice) != kIOReturnSuccess) {
         NSLog(@"BMAppleMikeyManager: Failed to open valueManager.");
     } else {
-        IOHIDManagerSetDeviceMatching(valueManager, IOServiceNameMatching("AppleMikeyHIDDriver"));
-        IOHIDManagerScheduleWithRunLoop(valueManager, CFRunLoopGetCurrent(), kCFRunLoopDefaultMode);
-        IOHIDManagerRegisterInputValueCallback(valueManager, valueCallback, (__bridge void *)self);
+        IOHIDManagerSetDeviceMatching(_valueManager, IOServiceNameMatching("AppleMikeyHIDDriver"));
+        IOHIDManagerScheduleWithRunLoop(_valueManager, CFRunLoopGetCurrent(), kCFRunLoopDefaultMode);
+        IOHIDManagerRegisterInputValueCallback(_valueManager, valueCallback, (__bridge void *)self);
     }
 }
 
 - (void) stopValueManager
 {
-    IOHIDManagerClose(valueManager, kIOHIDOptionsTypeNone);
-    CFRelease(valueManager);
-    valueManager = NULL;
+    IOHIDManagerClose(_valueManager, kIOHIDOptionsTypeNone);
+    CFRelease(_valueManager);
+    _valueManager = NULL;
 }
 
 - (void) startSecureTimer
 {
-    secureTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(checkSecureEventInput) userInfo:nil repeats:YES];
+    _secureTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(checkSecureEventInput) userInfo:nil repeats:YES];
 }
 
 - (void) stopSecureTimer
 {
-    [secureTimer invalidate];
-    secureTimer = nil;
+    [_secureTimer invalidate];
+    _secureTimer = nil;
 }
 
 #pragma mark Callbacks
