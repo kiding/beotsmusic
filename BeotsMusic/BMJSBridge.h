@@ -18,6 +18,7 @@ NSString * const BMJSException;
  * @param method Name of the method to be called.
  * @param arguments Go to <WebKit/WebScriptObject.h>:91 for argument types.
  * @return Go to <WebKit/WebScriptObject.h>:74 for return types.
+ * @exception BMJSException Throws when failed to evaluate the script.
  */
 - (id) callMethod: (NSString *) method withArguments: (NSArray *) arguments;
 

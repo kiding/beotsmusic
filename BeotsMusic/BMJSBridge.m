@@ -68,7 +68,9 @@
         if ([obj isKindOfClass:[WebScriptObject class]]) {
             _object = obj;
         } else {
-            NSAssert1(YES, @"An unexpected value %@ was returned by the script", _object);
+            @throw [NSException exceptionWithName:BMJSException
+                                           reason:[NSString stringWithFormat:@"Failed to evaluate the script, %@ was returned.", obj]
+                                         userInfo:nil];
         }
     }
 
