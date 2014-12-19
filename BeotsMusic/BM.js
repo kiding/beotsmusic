@@ -94,7 +94,7 @@
   };
 
   /**
-   * @typedef {Object} ajax~settings
+   * @typedef {Object} BM~ajax
    * @property {?string} type
    * @property {string} url
    * @property {?Object.<string, string>} data
@@ -102,7 +102,7 @@
    */
 
   /**
-   * @param {ajax~settings} settings
+   * @param {BM~ajax} settings
    * @return {?Object}
    * @description Sends a synchronous XHR request and returns the response. nil if the request failed or the response is not JSON.
    */
@@ -210,10 +210,10 @@
     var _this = this;
 
     // Check if this function is already called.
-    if (this._isListeningToRefresh) {
+    if (this._isListeningForTokens) {
       return false;
     } else {
-      this._isListeningToRefresh = true;
+      this._isListeningForTokens = true;
     }
 
     // Construct a new function and replace it.
