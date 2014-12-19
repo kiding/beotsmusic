@@ -1,4 +1,4 @@
-/** @return {string} A unique for the generated BM object. */
+/** @return {BM} */
 (function(window) {
   /**
    * @return {boolean}
@@ -83,8 +83,14 @@
     this._dispatchEvent = window.dispatchEvent;
 
     // Keeping global objects.
-    this._localStorage = window.localStorage;
     this._history = window.history;
+
+    // localStorage throws SecurityError when accessed locally.
+    try {
+      this._localStorage = window.localStorage;
+    } catch (e) {
+      this._localStorage = {};
+    }
   };
 
   /**
