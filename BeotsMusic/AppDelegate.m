@@ -244,7 +244,7 @@ id tmpHostWindow;
 - (void)webView:(WebView *)sender didClearWindowObject:(WebScriptObject *)windowObject forFrame:(WebFrame *)frame
 {
     if (frame == [webView mainFrame]) {
-        // Listen for new tokens right after JS context is ready.
+        // Listen for new tokens right after window object is ready.
         [bmJS callMethod:@"listenForTokens"];
     }
 }

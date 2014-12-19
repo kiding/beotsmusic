@@ -3,6 +3,8 @@
 @interface BMJSBridge ()
 {
     NSString *_script;
+    
+    JSGlobalContextRef _globalContext;
     WebScriptObject *_object;
 }
 @end
@@ -51,10 +53,17 @@
         _object = nil;
         return nil;
     }
+
+    // Get the current context.
+    JSGlobalContextRef globalContext = [_webFrame globalContext];
+    NSAssert(globalContext, @"Failed to initialize global context. Is JavaScript disabled?");
     
-    // Is _object available to use?
-    if (!(_object && [_object JSObject])) {
-        // No, so evaluate _script and get the object.
+    // Does _object exist in the current global context?
+    if (!(_object && _globalContext == globalContext)) {
+        // Remember the current context.
+        _globalContext = globalContext;
+        
+        // Evaluate _script and get the object.
         id obj = [[_webFrame windowObject] evaluateWebScript:_script];
         if ([obj isKindOfClass:[WebScriptObject class]]) {
             _object = obj;
