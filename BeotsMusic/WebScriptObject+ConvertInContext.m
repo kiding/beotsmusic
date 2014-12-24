@@ -24,6 +24,7 @@
     
     // Is it a function in this context?
     if (JSObjectIsFunction(context, object)) {
+        // TODO: Convert function into BMJSFunctionBlock.
         return self;
     }
     

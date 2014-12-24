@@ -37,6 +37,7 @@
 		DFA254561A46FA0100AB7581 /* WebScriptObject+ConvertInContext.m in Sources */ = {isa = PBXBuildFile; fileRef = DFA254551A46FA0100AB7581 /* WebScriptObject+ConvertInContext.m */; };
 		DFCFC5CA192F30DF00794B34 /* sound_up.m in Sources */ = {isa = PBXBuildFile; fileRef = DFCFC5C9192F30DF00794B34 /* sound_up.m */; };
 		DFCFC5CD192F310D00794B34 /* BMAppleMikeyManager.m in Sources */ = {isa = PBXBuildFile; fileRef = DFCFC5CC192F310D00794B34 /* BMAppleMikeyManager.m */; };
+		DFF8B7F91A40214E006B8997 /* BMJSFunctionProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = DFF8B7F81A40214E006B8997 /* BMJSFunctionProxy.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -103,6 +104,8 @@
 		DFCFC5C9192F30DF00794B34 /* sound_up.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = sound_up.m; sourceTree = "<group>"; };
 		DFCFC5CB192F310D00794B34 /* BMAppleMikeyManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BMAppleMikeyManager.h; sourceTree = "<group>"; };
 		DFCFC5CC192F310D00794B34 /* BMAppleMikeyManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BMAppleMikeyManager.m; sourceTree = "<group>"; };
+		DFF8B7F71A40214E006B8997 /* BMJSFunctionProxy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BMJSFunctionProxy.h; sourceTree = "<group>"; };
+		DFF8B7F81A40214E006B8997 /* BMJSFunctionProxy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BMJSFunctionProxy.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -229,6 +232,8 @@
 				DF8DACAF1A14ABE600B11219 /* BMJSBridge.m */,
 				DFA254541A46FA0100AB7581 /* WebScriptObject+ConvertInContext.h */,
 				DFA254551A46FA0100AB7581 /* WebScriptObject+ConvertInContext.m */,
+				DFF8B7F71A40214E006B8997 /* BMJSFunctionProxy.h */,
+				DFF8B7F81A40214E006B8997 /* BMJSFunctionProxy.m */,
 			);
 			path = BeotsMusic;
 			sourceTree = "<group>";
@@ -333,6 +338,7 @@
 			files = (
 				26B5794C167A58CD0034D295 /* NSObject+SPInvocationGrabbing.m in Sources */,
 				DF590B8A18C0E07900D0603C /* AppConstants.m in Sources */,
+				DFF8B7F91A40214E006B8997 /* BMJSFunctionProxy.m in Sources */,
 				DFA254561A46FA0100AB7581 /* WebScriptObject+ConvertInContext.m in Sources */,
 				26B5794D167A58CD0034D295 /* SPMediaKeyTap.m in Sources */,
 				DF590B8B18C0E07900D0603C /* AppDelegate.m in Sources */,
