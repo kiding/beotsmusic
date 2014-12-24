@@ -33,6 +33,8 @@
 		DF77A8D6192B8E690045BE66 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DF77A8D5192B8E690045BE66 /* IOKit.framework */; };
 		DF8DACB01A14ABE600B11219 /* BM.js in Resources */ = {isa = PBXBuildFile; fileRef = DF8DACAD1A14ABE600B11219 /* BM.js */; };
 		DF8DACB11A14ABE600B11219 /* BMJSBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = DF8DACAF1A14ABE600B11219 /* BMJSBridge.m */; };
+		DF93EEB31A39907F00640E70 /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DF93EEB21A39907F00640E70 /* JavaScriptCore.framework */; };
+		DFA254561A46FA0100AB7581 /* WebScriptObject+ConvertInContext.m in Sources */ = {isa = PBXBuildFile; fileRef = DFA254551A46FA0100AB7581 /* WebScriptObject+ConvertInContext.m */; };
 		DFCFC5CA192F30DF00794B34 /* sound_up.m in Sources */ = {isa = PBXBuildFile; fileRef = DFCFC5C9192F30DF00794B34 /* sound_up.m */; };
 		DFCFC5CD192F310D00794B34 /* BMAppleMikeyManager.m in Sources */ = {isa = PBXBuildFile; fileRef = DFCFC5CC192F310D00794B34 /* BMAppleMikeyManager.m */; };
 /* End PBXBuildFile section */
@@ -94,6 +96,9 @@
 		DF8DACAD1A14ABE600B11219 /* BM.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = BM.js; sourceTree = "<group>"; };
 		DF8DACAE1A14ABE600B11219 /* BMJSBridge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BMJSBridge.h; sourceTree = "<group>"; };
 		DF8DACAF1A14ABE600B11219 /* BMJSBridge.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BMJSBridge.m; sourceTree = "<group>"; };
+		DF93EEB21A39907F00640E70 /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
+		DFA254541A46FA0100AB7581 /* WebScriptObject+ConvertInContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "WebScriptObject+ConvertInContext.h"; sourceTree = "<group>"; };
+		DFA254551A46FA0100AB7581 /* WebScriptObject+ConvertInContext.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "WebScriptObject+ConvertInContext.m"; sourceTree = "<group>"; };
 		DFCFC5C8192F30DF00794B34 /* sound_up.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sound_up.h; sourceTree = "<group>"; };
 		DFCFC5C9192F30DF00794B34 /* sound_up.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = sound_up.m; sourceTree = "<group>"; };
 		DFCFC5CB192F310D00794B34 /* BMAppleMikeyManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BMAppleMikeyManager.h; sourceTree = "<group>"; };
@@ -105,6 +110,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DF93EEB31A39907F00640E70 /* JavaScriptCore.framework in Frameworks */,
 				DF77A8D6192B8E690045BE66 /* IOKit.framework in Frameworks */,
 				2618AE0116803F1900EC2E15 /* Carbon.framework in Frameworks */,
 				26A0087116771DA5006FD03A /* WebKit.framework in Frameworks */,
@@ -141,6 +147,7 @@
 		263C2B9F1677152500EF4792 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				DF93EEB21A39907F00640E70 /* JavaScriptCore.framework */,
 				DF77A8D5192B8E690045BE66 /* IOKit.framework */,
 				2666D13617E3104A0071A8BA /* Sparkle.framework */,
 				2618AE0016803F1900EC2E15 /* Carbon.framework */,
@@ -220,6 +227,8 @@
 				DF8DACAD1A14ABE600B11219 /* BM.js */,
 				DF8DACAE1A14ABE600B11219 /* BMJSBridge.h */,
 				DF8DACAF1A14ABE600B11219 /* BMJSBridge.m */,
+				DFA254541A46FA0100AB7581 /* WebScriptObject+ConvertInContext.h */,
+				DFA254551A46FA0100AB7581 /* WebScriptObject+ConvertInContext.m */,
 			);
 			path = BeotsMusic;
 			sourceTree = "<group>";
@@ -324,6 +333,7 @@
 			files = (
 				26B5794C167A58CD0034D295 /* NSObject+SPInvocationGrabbing.m in Sources */,
 				DF590B8A18C0E07900D0603C /* AppConstants.m in Sources */,
+				DFA254561A46FA0100AB7581 /* WebScriptObject+ConvertInContext.m in Sources */,
 				26B5794D167A58CD0034D295 /* SPMediaKeyTap.m in Sources */,
 				DF590B8B18C0E07900D0603C /* AppDelegate.m in Sources */,
 				3A6AE3A317613C9900D67ADC /* DHSwipeClipView.m in Sources */,
