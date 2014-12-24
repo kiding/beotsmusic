@@ -297,11 +297,7 @@
     var coo = getCookies();
 
     // Get track ID.
-    try {
-      var tid = JSON.parse(this._localStorage.player).trackId;
-    } catch (e) {
-      return false;
-    }
+    var tid = this._currentPlayerState().trackId;
 
     // Do the AJAX.
     if (tid && coo.user_id && coo.access_token) {
@@ -341,28 +337,48 @@
   };
 
   /**
-   * @return {boolean}
-   * @description Checks if the player is playing.
+   * @typedef {Object} BM~playerState
+   * @property {boolean} playing
+   * @property {?string} trackId
    */
-  BM.prototype.isPlaying = function isPlaying() {
+
+  /**
+   * @return {BM~playerState}
+   * @description Returns the current state of the player.
+   */
+  BM.prototype._currentPlayerState = function _currentPlayerState() {
+    /** @type {BM~playerState} */
+    var state = {
+      playing: false,
+      trackId: null
+    };
+
     // If there's no .transport, the player is not initialized yet.
     if (!window.document.getElementsByClassName('transport').length) {
-      return false;
+      return state; // false & null
     }
 
     // If there is .transport but also .transport--hidden, the player never played anything yet.
     if (window.document.getElementsByClassName('transport--hidden').length) {
-      return false;
+      return state; // false & null
     }
 
-    // Check localStorage for status.
+    // Parse localStorage for info.
     try {
       var player = JSON.parse(this._localStorage.player);
-    } catch (e) {
-      return false;
-    }
+      state.playing = !!(player.playing && !player.paused);
+      state.trackId = player.trackId || null;
+    } catch (e) {}
 
-    return !!(player.playing && !player.paused);
+    return state;
+  };
+
+  /**
+   * @return {boolean}
+   * @description Checks if the player is playing.
+   */
+  BM.prototype.isPlaying = function isPlaying() {
+    return this._currentPlayerState().playing;
   };
 
   /**
