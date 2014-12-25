@@ -16,10 +16,17 @@
 #import "BMJSBridge.h"
 #import "AppDelegate.h"
 
+typedef enum : NSUInteger {
+    BMNotificationCapabilityUnsupported = 0,
+    BMNotificationCapabilityNoImage,
+    BMNotificationCapabilityContentImage,
+    BMNotificationCapabilityIdentityImage
+} BMNotificationCapability;
+
 @interface AppDelegate : NSObject <NSApplicationDelegate, NSWindowDelegate, BMAppleMikeyManagerDelegate, NSUserNotificationCenterDelegate> {
     SPMediaKeyTap *keyTap;
     BMAppleMikeyManager *mikeyManager;
-    NSUserNotificationCenter *defaultCenter;
+    BMNotificationCapability capability;
     BMJSBridge *bmJS;
 }
 
@@ -68,8 +75,7 @@
 - (void) mikeyDidNext;
 - (void) mikeyDidPrevious;
 
-- (void)userNotificationCenter:(NSUserNotificationCenter *)center
-       didActivateNotification:(NSUserNotification *)notification;
+- (void)userNotificationCenter:(NSUserNotificationCenter *)center didActivateNotification:(NSUserNotification *)notification;
 
 - (void) sheetDidDismiss:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void  *)contextInfo;
 @end

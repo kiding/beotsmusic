@@ -59,8 +59,21 @@ id tmpHostWindow;
     } else
         NSLog(@"AppDelegate: mikeyManager failed to initalize.");
     
-    if(NSClassFromString(@"NSUserNotificationCenter")) {
-        defaultCenter = [NSUserNotificationCenter defaultUserNotificationCenter];
+    // Detect notification capability.
+    capability = BMNotificationCapabilityUnsupported;
+    if (NSClassFromString(@"NSUserNotificationCenter")) {
+        capability = BMNotificationCapabilityNoImage;
+
+        NSUserNotification *tester = [[NSUserNotification alloc] init];
+        if ([tester respondsToSelector:@selector(setContentImage:)]) {
+            capability = BMNotificationCapabilityContentImage;
+        }
+        if ([tester respondsToSelector:@selector(set_identityImage:)]) {
+            capability = BMNotificationCapabilityIdentityImage;
+        }
+        
+        // Set AppDelegate to the delegate of NSUserNotificationCenter.
+        NSUserNotificationCenter *defaultCenter = [NSUserNotificationCenter defaultUserNotificationCenter];
         [defaultCenter removeAllDeliveredNotifications];
         defaultCenter.delegate = self;
     }
@@ -179,65 +192,6 @@ id tmpHostWindow;
 {
     if (frame == [webView mainFrame]) {
         [window setTitle:title];
-        if ([self isPlaying]) {
-            // main.js:17889 "Song: " + i + " by " + n + " | Beats Music"
-            title = [title stringByReplacingOccurrencesOfString:@"Song: " withString:@""];
-            title = [title stringByReplacingOccurrencesOfString:@" | Beats Music" withString:@""];
-            NSArray *info = [title componentsSeparatedByString:@" by "];
-            if (info.count == 2 && defaultCenter) {
-                // Remove all delivered notifications.
-                [defaultCenter removeAllDeliveredNotifications];
-                
-                // Make a new notification.
-                NSUserNotification *notification = [[NSUserNotification alloc] init];
-                notification.title = info[0]; // track
-                notification.subtitle = info[1]; // artist
-                notification.actionButtonTitle = @"Skip"; // Skip button
-                [notification setValue:@YES forKey:@"_showsButtons"]; // Force-show buttons
-                
-                // Check if the OS can handle an image in a notification.
-                BOOL canAcceptIdentityImage = [notification respondsToSelector:@selector(set_identityImage:)];
-                BOOL canAcceptContentImage = [notification respondsToSelector:@selector(setContentImage:)];
-                if(canAcceptIdentityImage || canAcceptContentImage) {
-                    // Get the album image URL.
-                    NSString *css = [webView stringByEvaluatingJavaScriptFromString:@"$('#t-art').css('background-image')"];
-                    if(![css isEqualToString:@""]) {
-                        NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"url\\s*\\(\\s*['\"]?\\s*(.+?)\\s*['\"]?\\s*\\)"
-                                                                                               options:NSRegularExpressionCaseInsensitive
-                                                                                                 error:nil];
-                        NSTextCheckingResult *result = [regex firstMatchInString:css options:0 range:NSMakeRange(0, [css length])];
-                        if(result) {
-                            NSRange range = [result rangeAtIndex:1];
-                            NSURL *url = [NSURL URLWithString:[css substringWithRange:range]];
-                            
-                            NSURLRequest *request = [[NSURLRequest alloc] initWithURL:url cachePolicy:0 timeoutInterval:60];
-                            [NSURLConnection sendAsynchronousRequest:request
-                                                               queue:[NSOperationQueue mainQueue]
-                                                   completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
-                                                       // Make data an image, put it in the notification.
-                                                       if (!connectionError && data) {
-                                                           NSImage *image = [[NSImage alloc] initWithData:data];
-                                                           
-                                                           if(canAcceptIdentityImage) {
-                                                               [notification set_identityImage:image];
-                                                           } else {
-                                                               [notification setContentImage:image];
-                                                           }
-                                                       }
-
-                                                       // Deliver the notification.
-                                                       [defaultCenter deliverNotification:notification];
-                                                   }];
-                        }
-                    }
-                }
-                // It can't.
-                else {
-                    // Deliver the notification.
-                    [defaultCenter deliverNotification:notification];
-                }
-            }
-        }
     }
 }
 
