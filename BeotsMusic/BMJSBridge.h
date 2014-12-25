@@ -1,6 +1,7 @@
 #import <Foundation/Foundation.h>
 #import <WebKit/WebKit.h>
 #import <WebKit/WebScriptObject.h>
+#import "BMJSFunctionProxy.h"
 
 NSString * const BMJSException;
 
@@ -16,7 +17,8 @@ NSString * const BMJSException;
 
 /**
  * @param method Name of the method to be called.
- * @param arguments Go to <WebKit/WebScriptObject.h>:91 for argument types.
+ * @param arguments The array accepts the types specified in <WebKit/WebScriptObject.h>:91.
+ * Also, BMJSFunctionBlock => function object.
  * @return Go to <WebKit/WebScriptObject.h>:74 for return types.
  * @exception BMJSException Throws when failed to evaluate the script.
  */

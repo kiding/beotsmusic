@@ -1,4 +1,5 @@
 #import "BMJSBridge.h"
+#import "WebScriptObject+ConvertInContext.h"
 
 @interface BMJSBridge ()
 {
@@ -6,6 +7,8 @@
     
     JSGlobalContextRef _globalContext;
     WebScriptObject *_object;
+    
+    Class _NSBlock;
 }
 @end
 
@@ -38,6 +41,8 @@
         }
         
         _script = script;
+        
+        _NSBlock = NSClassFromString(@"NSBlock");
     }
     return self;
 }
@@ -74,6 +79,24 @@
         }
     }
 
+    // Check through arguments.
+    if (arguments) {
+        NSUInteger count = [arguments count];
+        NSMutableArray *mut = [NSMutableArray array];
+        for(NSUInteger i=0; i<count; i++) {
+            id obj = arguments[i];
+            
+            // Convert BMJSFunctionBlock to WebScriptObject.
+            if ([obj isKindOfClass:_NSBlock]) {
+                [mut addObject:[BMJSFunctionProxy scriptObjectWithBlock:obj inWebFrame:_webFrame]];
+            } else {
+                [mut addObject:obj];
+            }
+        }
+        
+        arguments = [NSArray arrayWithArray:mut];
+    }
+    
     // Call the method and return.
     return [_object callWebScriptMethod:method withArguments:arguments];
 }
