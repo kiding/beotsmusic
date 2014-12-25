@@ -237,6 +237,99 @@
 
     return true;
   };
+  
+  /**
+   * @typedef {Object} BM~track
+   * @property {string} title
+   * @property {string} artist
+   * @property {?string} art - URL of the album art
+   */
+
+  /**
+   * @callback BM~currentTrackCallback
+   * @param {BM~track} currentTrack
+   */
+
+  /** 
+   * @return {boolean}
+   * @param {BM~currentTrackCallback} callback
+   * @description Checks for a new current track periodically, calls back with the information.
+   */
+  BM.prototype.listenForCurrentTrack = function listenForCurrentTrack(callback) {
+    var _this = this;
+
+    // Check callback.
+    if (typeof callback != 'function') {
+      return false;
+    }
+
+    // Check if this function is already called.
+    if (this._isListeningForCurrentTrack) {
+      return false;
+    } else {
+      this._isListeningForCurrentTrack = true;
+    }
+
+    /** @type {RegExp} */
+    var cssURLRE = /url\s*\(\s*['"]?\s*(.+?)\s*['"]?\s*\)/;
+
+    /** @type {BM~playerState} */
+    var state = {
+      playing: false,
+      trackId: null
+    };
+
+    setInterval(function() {
+      // A new state appeared!
+      var currState = _this._currentPlayerState();
+      var prevState = state;
+      state = currState;
+
+      // Is it playing, does the song exist, and did the song change?
+      if (!(currState.playing && currState.trackId && currState.trackId != prevState.trackId)) { 
+        return;
+      }
+
+      // Get the parent DOM.
+      var target = window.document.querySelector('.transport .artist-track-target');
+      if (!target) {
+        return;
+      }
+
+      // Get title, artist.
+      var title = (function() {
+        var el = target.getElementsByClassName('track')[0];
+        return el && el.innerText;
+      })();
+
+      var artist = (function() {
+        var el = target.getElementsByClassName('artist')[0];
+        return el && el.innerText;
+      })();
+
+      // title and artist must exist.
+      if (!(title && artist)) {
+        return;
+      }
+
+      // Get art.
+      var art = (function() {
+        var el = window.document.getElementById('t-art'),
+            css = el && getComputedStyle(el),
+            m = css && (css.backgroundImage + '').match(cssURLRE);
+        return m && m[1];
+      })();
+
+      // Callback!
+      callback({
+        title: title,
+        artist: artist,
+        art: art || null
+      });
+    }, 750);
+
+    return true;
+  };
 
   /** 
    * @return {boolean}
@@ -290,6 +383,7 @@
    * @return {boolean}
    * @description Adds the current track to My Library by explicitly calling Beats Music API.
    */
+  // TODO: There's a good chance this will block the music playback when implementing #4.
   BM.prototype.addToMyLibrary = function addToMyLibrary() {
     var _this = this;
 
