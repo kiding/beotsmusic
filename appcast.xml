@@ -6,8 +6,17 @@
 			<description>Most recent changes with links to updates.</description>
 			<language>en</language>
 				 <item>
-						<title>Version 0.2</title>
+						<title>Version 0.3</title>
 						<description><![CDATA[
+							<h2>0.3 (December 25, 2014)</h2>
+							<ul>
+								<li>No more login! Stay signed in (for up to 24 hours.)</li>
+								<li>iTunes-like notification with skip button!</li>
+								<li>Fixed Add to My Library functionality.</li>
+								<li>Account settings like signup, password recovery are now done in an external browser.</li>
+								<li>Minor bug fixes.</li>
+							</ul>
+							
 							<h2>0.2 (June 6, 2014)</h2>
 							<ul>
 								<li>Headphones remote (Apple Mikey) support!</li>
@@ -16,8 +25,8 @@
 								<li>Minor bug fixes.</li>
 							</ul>
 						]]></description>
-						<pubDate>Fri, 06 Jun 2014 12:01:25 +0900</pubDate>
-						<enclosure url="https://github.com/kiding/beotsmusic/releases/download/0.2/BeotsMusic.dmg" sparkle:version="0.2" length="4593890" type="application/octet-stream" sparkle:dsaSignature="MC4CFQDNjo0lojDFnx7nLDN2G6FrKrTTkgIVAKgslFlsdOojVrshHSJkS/AjnCNh" />
+						<pubDate>Thu, 26 Dec 2014 00:00:00 +0900</pubDate>
+						<enclosure url="https://github.com/kiding/beotsmusic/releases/download/0.3/BeotsMusic.dmg" sparkle:version="0.3" length="4775957" type="application/octet-stream" sparkle:dsaSignature="MC0CFQCugxuSflSJdSPtVayYwNHAYd7UVwIUM1jB/4aH5AzSndGXkC428QSv0Us=" />
 				 </item>
 	 </channel>
 </rss>
