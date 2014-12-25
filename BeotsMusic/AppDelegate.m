@@ -336,6 +336,52 @@ id tmpHostWindow;
     }
 }
 
+- (void)deliverNotificationWithTitle:(NSString *)title subtitle:(NSString *)subtitle image:(NSURL *)imageURL
+{
+    // Unsupported.
+    if (capability <= BMNotificationCapabilityUnsupported) {
+        return;
+    }
+    
+    // Make a new notification.
+    NSUserNotification *notification = [[NSUserNotification alloc] init];
+    notification.title = title;
+    notification.subtitle = subtitle;
+    notification.actionButtonTitle = @"Skip"; // Skip button
+    [notification setValue:@YES forKey:@"_showsButtons"]; // Force-show buttons
+
+    // Is imageURL provided and the OS capable?
+    if (imageURL && capability > BMNotificationCapabilityNoImage) {
+        NSURLRequest *request = [[NSURLRequest alloc] initWithURL:imageURL cachePolicy:0 timeoutInterval:60];
+        [NSURLConnection sendAsynchronousRequest:request
+                                           queue:[NSOperationQueue mainQueue]
+                               completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
+                                   // Make data an image, put it in the notification.
+                                   if (!connectionError && data) {
+                                       NSImage *image = [[NSImage alloc] initWithData:data];
+                                       
+                                       if (capability == BMNotificationCapabilityIdentityImage) {
+                                           [notification set_identityImage:image];
+                                       } else if (capability == BMNotificationCapabilityContentImage) {
+                                           [notification setContentImage:image];
+                                       }
+                                   }
+                                   
+                                   // Deliver the notification.
+                                   NSUserNotificationCenter *defaultCenter = [NSUserNotificationCenter defaultUserNotificationCenter];
+                                   [defaultCenter removeAllDeliveredNotifications];
+                                   [defaultCenter deliverNotification:notification];
+                               }];
+
+    }
+    // No, deliver the notification right away.
+    else {
+        NSUserNotificationCenter *defaultCenter = [NSUserNotificationCenter defaultUserNotificationCenter];
+        [defaultCenter removeAllDeliveredNotifications];
+        [defaultCenter deliverNotification:notification];
+    }
+}
+
 - (void)next
 {
     [bmJS callMethod:@"next"];

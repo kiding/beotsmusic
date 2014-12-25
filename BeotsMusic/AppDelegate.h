@@ -60,6 +60,8 @@ typedef enum : NSUInteger {
 - (IBAction)hate:(id)sender;
 - (IBAction)addToMyLibrary:(id)sender;
 
+- (void)deliverNotificationWithTitle:(NSString *)title subtitle:(NSString *)subtitle image:(NSURL *)imageURL;
+
 - (void)next;
 - (void)prev;
 - (void)playPause;
