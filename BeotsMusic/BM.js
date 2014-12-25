@@ -170,7 +170,8 @@
     }
 
     // Refresh the token.
-    var succeed = false, max = 15, curr = 0; // Retry count.
+    var succeed = false, max = 2, curr = 0; // Retry count.
+    // TODO: Make _ajax and this asynchronous.
 
     var fire = function() {
       var res = _this._ajax({
