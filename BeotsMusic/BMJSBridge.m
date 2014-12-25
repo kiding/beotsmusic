@@ -97,8 +97,9 @@
         arguments = [NSArray arrayWithArray:mut];
     }
     
-    // Call the method and return.
-    return [_object callWebScriptMethod:method withArguments:arguments];
+    // Call the method, convert, and return.
+    id res = [_object callWebScriptMethod:method withArguments:arguments];
+    return [res isKindOfClass:[WebScriptObject class]] ? [res convertInContext:_globalContext] : res;
 }
 
 - (id) callMethod: (NSString *) method
