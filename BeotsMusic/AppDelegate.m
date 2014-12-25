@@ -8,6 +8,7 @@
 
 #import "AppConstants.h"
 #import "AppDelegate.h"
+#import <Sparkle/Sparkle.h>
 
 @interface WebPreferences (WebPreferencesPrivate)
 - (void)_setLocalStorageDatabasePath:(NSString *)path;
@@ -351,7 +352,33 @@ id tmpHostWindow;
 - (IBAction)addToMyLibrary:(id)sender
 {
     if ((__bridge CFBooleanRef)[bmJS callMethod:@"addToMyLibrary"] != kCFBooleanTrue) {
-        NSBeginCriticalAlertSheet(@"There was an error adding the current track to your library.", @"Retry", @"Cancel", NULL, window, self, NULL, @selector(sheetDidDismiss:returnCode:contextInfo:), NULL, @"Please try again.");
+        NSBeginCriticalAlertSheet(@"There was an error adding the current track to your library.", @"Retry", @"Cancel", NULL, window, self, NULL, @selector(sheetDidDismiss:returnCode:contextInfo:), _cmd, @"Please try again.");
+    }
+}
+
+- (IBAction)deleteCookies:(id)sender
+{
+    // User clicked "Delete Cookies..." menu item.
+    if (sender) {
+        NSBeginCriticalAlertSheet(@"Delete Cookies?", @"Proceed", @"Cancel", NULL, window, self, NULL, @selector(sheetDidDismiss:returnCode:contextInfo:), _cmd, @"This will clear cookies for Beats Music websites. Proceed if you're having trouble logging in.\nRemoving cookies will affect Safari too.");
+    }
+    // After the alert sheet.
+    else {
+        // Delete cookies for http, https and BMHost, BMAccountHost.
+        NSHTTPCookieStorage *sharedStorage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
+        for(NSString *protocol in @[@"http", @"https"]) {
+            for(NSString *domain in @[BMHost, BMAccountHost]) {
+                NSArray *cookies = [sharedStorage cookiesForURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@://%@", protocol, domain]]];
+                
+                for(NSHTTPCookie *cookie in cookies) {
+                    [sharedStorage deleteCookie:cookie];
+                }
+            }
+        }
+        
+        // Go back to the main page.
+        [webView setMainFrameURL:[@"https://" stringByAppendingString:BMHost]];
+        [webView reload:self];
     }
 }
 
@@ -484,10 +511,15 @@ id tmpHostWindow;
 
 #pragma mark - NSBeginAlertSheet Modal Delegate
 
-- (void) sheetDidDismiss:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void  *)contextInfo
+- (void) sheetDidDismiss:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo
 {
-    if (returnCode == NSAlertDefaultReturn) {
+    SEL method = (SEL)contextInfo;
+    
+    if (method == @selector(addToMyLibrary:) && returnCode == NSAlertDefaultReturn) {
         [self addToMyLibrary:nil];
+    }
+    else if (method == @selector(deleteCookies:) && returnCode == NSAlertDefaultReturn) {
+        [self deleteCookies:nil];
     }
 }
 

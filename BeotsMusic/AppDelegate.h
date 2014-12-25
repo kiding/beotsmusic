@@ -59,6 +59,7 @@ typedef enum : NSUInteger {
 - (IBAction)love:(id)sender;
 - (IBAction)hate:(id)sender;
 - (IBAction)addToMyLibrary:(id)sender;
+- (IBAction)deleteCookies:(id)sender;
 
 - (void)deliverNotificationWithTitle:(NSString *)title subtitle:(NSString *)subtitle image:(NSURL *)imageURL;
 
