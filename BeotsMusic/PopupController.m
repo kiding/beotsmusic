@@ -57,7 +57,14 @@
 
 + (BOOL)isLoginURL:(NSURL *)url
 {
-    return [[url host] isEqualToString: BMFacebookHost] || [[url host] isEqualToString: BMTwitterHost];
+    if (url != nil) {
+        NSString *host = [url host];
+        NSString *path = [url path];
+        return [host isEqualToString: BMFacebookHost] || [host isEqualToString: BMTwitterHost]
+        || ([host isEqualToString:BMAccountHost] && ([path isEqualToString:BMTwitterAuthPath] || [path isEqualToString:BMTwitterAuthCBPath]));
+    } else {
+        return NO;
+    }
 }
 
 @end

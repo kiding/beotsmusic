@@ -13,6 +13,8 @@ NSString *const BMHost = @"listen.beatsmusic.com";
 NSString *const BMAccountHost = @"account.beatsmusic.com";
 NSString *const BMLoginPath = @"/login";
 NSString *const BMLogoutPath = @"/logout";
+NSString *const BMTwitterAuthPath = @"/twitter-auth";
+NSString *const BMTwitterAuthCBPath = @"/twitter-auth-cb";
 
 NSString *const BMFacebookHost = @"www.facebook.com";
 NSString *const BMTwitterHost = @"api.twitter.com";
