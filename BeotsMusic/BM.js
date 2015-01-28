@@ -376,6 +376,250 @@
     return !!(plugins && plugins.length && mimeTypes && mimeTypes[type] && mimeTypes[type].enabledPlugin && mimeTypes[type].enabledPlugin.description);
   };
 
+  /**
+   * @typedef {Function} BM~revertCallback
+   * @param {boolean} isFlashInstalled
+   */
+
+  /**
+   * @return {boolean}
+   * @param {BM~revertCallback} callback - Will be called when the injection is failed and reverted.
+   * @description Injects several objects to induce the web app to play tracks without Flash plugin.
+   */
+  BM.prototype.playWithoutFlash = function playWithoutFlash(callback) {
+    var _this = this;
+
+    /**
+     * Check if it's playing without Flash,
+     * or the injecting process is currently underway.
+     */
+    if (this._isPlayingWithoutFlash) {
+      return false;
+    }
+
+    // Flags!
+    var didInjectMimeType = false,
+        didInjectFlashDetect = false,
+        didInjectSoundManager = false,
+        didInjectXHR = false;
+
+    /**
+     * @return {boolean} didInjectXHR
+     */
+    var inject = function() {
+      _this._isPlayingWithoutFlash = true;
+
+      if (!didInjectMimeType) {
+        (function() {
+          // Is Flash installed?
+          var navi = _this._navigator,
+              mimeTypes = navi && navi.mimeTypes,
+              type = 'application/x-shockwave-flash';
+          if (mimeTypes && !mimeTypes[type]) {
+            // Pretend there is one.
+            mimeTypes[type] = {
+              description: 'Shockwave Flash',
+              enabledPlugin: {
+                description: 'Shockwave Flash 16.0 r0'
+              },
+              suffixes: 'swf',
+              type: type
+            };
+
+            didInjectMimeType = true; // flag
+          }
+        })();
+      }
+
+      if (!didInjectFlashDetect) {
+        (function() {
+          // Find FlashDetect.
+          var FD = window.FlashDetect;
+          if (FD && !FD.installed) {
+            // Force FlashDetect to think there is one.
+            Object.defineProperty(FD, 'installed', {
+              configurable: true,
+              set: function() {},
+              get: function() { return true; }
+            });
+            FD.raw = 'Shockwave Flash 16.0 r0';
+            FD.major = 16;
+            FD.minor = 0;
+            FD.revision = -1;
+            FD.revisionStr = 'r0';
+
+            didInjectFlashDetect = true; // flag
+          }
+        })();
+      }
+
+      if (!didInjectSoundManager) {
+        (function() {
+          // Find window.sm or window.soundManager.
+          var SM = window.SoundManager,
+              sm = window.sm || window.soundManager;
+          if (SM && sm instanceof SM) {
+            // Make SoundManager HTML5-Only.
+            Object.defineProperty(sm, 'html5Only', {
+              configurable: true,
+              set: function() {},
+              get: function() { return true; }
+            });
+            sm.reboot();
+
+            didInjectSoundManager = true; // flag
+          }
+        })();
+      }
+
+      /**
+       * Listen for XHR open, change audio protocol.
+       * Continue only if SoundManager is ready.
+       */
+      if (!didInjectXHR && didInjectSoundManager) {
+        (function() {
+          /** @type {RegExp} */
+          var rtmpRE = /(\/audio?.*protocol\s*=\s*)rtmp/gi;
+
+          /** @type {BM~openCallback} */
+          _this._openCallbacks['playWithoutFlash'] = function(openRequest, openArguments) {
+            // Change protocol=rtmp to httpd if the url contains it.
+            var url = openArguments[1];
+            if (!rtmpRE.test(url)) {
+              return; // Nothing to do.
+            }
+            openArguments[1] = url.replace(rtmpRE, '$1httpd');
+
+            // Assign a onload event.
+            openRequest.addEventListener('load', function() {
+              // Check if this method is still available.
+              var succeed = false;
+              try {
+                var res = JSON.parse(this.responseText);
+                if (res && (res.code == 'OK' || res.code == 'StreamRightsUnavailable')) {
+                  succeed = true;
+                }
+              } catch (e) {}
+
+              // No, it's busted!
+              if (!succeed) {
+                // Revert!
+                revert();
+              }
+            });
+          };
+
+          didInjectXHR = true; // flag
+        })();
+      }
+
+      return didInjectXHR;
+    };
+
+    /**
+     * @return {boolean} didInjectXHR
+     */
+    var revert = function() {
+      // NOTE: Reverts in the reverse order.
+
+      if (didInjectXHR) {
+        (function() {
+          delete _this._openCallbacks['playWithoutFlash'];
+
+          didInjectXHR = false; // flag
+        })();
+      }
+
+      if (didInjectSoundManager) {
+        (function() {
+          // Find window.sm or window.soundManager.
+          var SM = window.SoundManager,
+              sm = window.sm || window.soundManager;
+          if (SM && sm instanceof SM) {
+            // Revert it to false.
+            Object.defineProperty(sm, 'html5Only', {
+              configurable: true,
+              enumerable: true,
+              writable: true,
+              value: false
+            });
+            sm.reboot();
+          }
+
+          didInjectSoundManager = false; // flag
+        })();
+      }
+
+      // NOTE: Injecting mime type affects FlashDetect too.
+      if (didInjectFlashDetect || didInjectMimeType) {
+        (function() {
+          // Find FlashDetect.
+          var FD = window.FlashDetect;
+          if (FD && FD.installed) {
+            // Stop forcing FlashDetect.
+            Object.defineProperty(FD, 'installed', {
+              configurable: true,
+              enumerable: true,
+              writable: true,
+              value: false
+            });
+            FD.raw = '';
+            FD.major = -1;
+            FD.minor = -1;
+            FD.revision = -1;
+            FD.revisionStr = '';
+          } 
+
+          didInjectFlashDetect = false; // flag
+        })();
+      }
+
+      if (didInjectMimeType) {
+        (function() {
+          // Stop pretending.
+          var navi = _this._navigator,
+              mimeTypes = navi && navi.mimeTypes,
+              type = 'application/x-shockwave-flash';
+          if (mimeTypes && mimeTypes[type]) {
+            delete mimeTypes[type];
+          }
+
+          didInjectMimeType = false; // Flag
+        })();
+      }
+
+      _this._isPlayingWithoutFlash = false;
+
+      // Callback.
+      if (typeof callback == 'function') {
+        setTimeout(callback.bind(this, _this.isFlashInstalled(false)));
+      }
+
+      return didInjectXHR;
+    };
+
+    // Prepare!
+    var max = 30, curr = 0, delay = 1000; // Retry count.
+    var fire = function() {
+      // Start injecting. If failed,
+      if (!inject()) {
+        curr++;
+        // Retry!
+        if (curr < max) {
+          setTimeout(fire, delay);
+        }
+        // Give up.
+        else {
+          revert();
+        }
+      }
+    };
+
+    fire();
+
+    return true;
+  };
+
   /** 
    * @return {boolean}
    * @description Clicks the search button.
@@ -428,7 +672,6 @@
    * @return {boolean}
    * @description Adds the current track to My Library by explicitly calling Beats Music API.
    */
-  // TODO: There's a good chance this will block the music playback when implementing #4.
   BM.prototype.addToMyLibrary = function addToMyLibrary() {
     var _this = this;
 
