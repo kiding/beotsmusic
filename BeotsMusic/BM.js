@@ -112,6 +112,7 @@
 
     // Keeping global objects.
     this._history = window.history;
+    this._navigator = window.navigator;
 
     // localStorage throws SecurityError when accessed locally.
     try {
@@ -355,6 +356,24 @@
     }, 750);
 
     return true;
+  };
+
+  /**
+   * @return {boolean}
+   * @param {boolean} refresh - Calls navigator.plugins.refresh(false)
+   * @description Returns if Flash plugin is installed.
+   */
+  BM.prototype.isFlashInstalled = function isFlashInstalled(refresh) {
+    var navi = this._navigator,
+        plugins = navi && navi.plugins,
+        mimeTypes = navi && navi.mimeTypes,
+        type = 'application/x-shockwave-flash';
+
+    if (!!refresh) {
+      plugins.refresh(false);
+    }
+
+    return !!(plugins && plugins.length && mimeTypes && mimeTypes[type] && mimeTypes[type].enabledPlugin && mimeTypes[type].enabledPlugin.description);
   };
 
   /** 
