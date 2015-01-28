@@ -352,7 +352,7 @@ id tmpHostWindow;
 - (IBAction)addToMyLibrary:(id)sender
 {
     if ((__bridge CFBooleanRef)[bmJS callMethod:@"addToMyLibrary"] != kCFBooleanTrue) {
-        NSBeginCriticalAlertSheet(@"There was an error adding the current track to your library.", @"Retry", @"Cancel", NULL, window, self, NULL, @selector(sheetDidDismiss:returnCode:contextInfo:), _cmd, @"Please try again.");
+        NSBeginCriticalAlertSheet(@"There was an error adding the current track to your library.", @"Retry", @"Cancel", NULL, window, self, NULL, @selector(sheetDidDismiss:returnCode:contextInfo:), @"addToMyLibrary", @"Please try again.");
     }
 }
 
@@ -360,7 +360,7 @@ id tmpHostWindow;
 {
     // User clicked "Delete Cookies..." menu item.
     if (sender) {
-        NSBeginCriticalAlertSheet(@"Delete Cookies?", @"Proceed", @"Cancel", NULL, window, self, NULL, @selector(sheetDidDismiss:returnCode:contextInfo:), _cmd, @"This will clear cookies for Beats Music websites. Proceed if you're having trouble logging in.\nRemoving cookies will affect Safari too.");
+        NSBeginCriticalAlertSheet(@"Delete Cookies?", @"Proceed", @"Cancel", NULL, window, self, NULL, @selector(sheetDidDismiss:returnCode:contextInfo:), @"deleteCookies", @"This will clear cookies for Beats Music websites. Proceed if you're having trouble logging in.\nRemoving cookies will affect Safari too.");
     }
     // After the alert sheet.
     else {
@@ -513,12 +513,12 @@ id tmpHostWindow;
 
 - (void) sheetDidDismiss:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo
 {
-    SEL method = (SEL)contextInfo;
+    NSString *method = (__bridge NSString *)(contextInfo);
     
-    if (method == @selector(addToMyLibrary:) && returnCode == NSAlertDefaultReturn) {
+    if ([method isEqualToString:@"addToMyLibrary"] && returnCode == NSAlertDefaultReturn) {
         [self addToMyLibrary:nil];
     }
-    else if (method == @selector(deleteCookies:) && returnCode == NSAlertDefaultReturn) {
+    else if ([method isEqualToString:@"deleteCookies"] && returnCode == NSAlertDefaultReturn) {
         [self deleteCookies:nil];
     }
 }
