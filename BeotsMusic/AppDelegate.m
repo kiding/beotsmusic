@@ -199,26 +199,31 @@ id tmpHostWindow;
 - (void)webView:(WebView *)sender didClearWindowObject:(WebScriptObject *)windowObject forFrame:(WebFrame *)frame
 {
     if (frame == [webView mainFrame]) {
+        NSURL *url = [[[frame dataSource] request] URL];
+        
         // Listen for new tokens right after window object is ready.
         [bmJS callMethod:@"listenForTokens"];
         
-        // If the OS supports NSUserNotificationCenter,
-        if (capability > BMNotificationCapabilityUnsupported) {
-            // Listen for new current track information.
-            __weak AppDelegate *weakSelf = self;
-            [bmJS callMethod:@"listenForCurrentTrack" withArguments:@[^(NSArray *arguments) {
-                NSAssert(arguments && [arguments count], @"No argument given.");
-                
-                NSDictionary *track = arguments[0];
-                NSAssert([track isKindOfClass:[NSDictionary class]], @"Track information is not NSDictionary.");
-                
-                NSString *title = track[@"title"];
-                NSString *artist = track[@"artist"];
-                NSString *art = track[@"art"];
-                NSAssert(title && [title length] && artist && [artist length], @"Required fields are empty.");
-                
-                [weakSelf deliverNotificationWithTitle:title subtitle:artist image:[NSURL URLWithString:art]];
-            }]];
+        // Check if frame is at BMHost, the web player.
+        if ([[url host] isEqualToString:BMHost]) {
+            // If the OS supports NSUserNotificationCenter,
+            if (capability > BMNotificationCapabilityUnsupported) {
+                // Listen for new current track information.
+                __weak AppDelegate *weakSelf = self;
+                [bmJS callMethod:@"listenForCurrentTrack" withArguments:@[^(NSArray *arguments) {
+                    NSAssert(arguments && [arguments count], @"No argument given.");
+                    
+                    NSDictionary *track = arguments[0];
+                    NSAssert([track isKindOfClass:[NSDictionary class]], @"Track information is not NSDictionary.");
+                    
+                    NSString *title = track[@"title"];
+                    NSString *artist = track[@"artist"];
+                    NSString *art = track[@"art"];
+                    NSAssert(title && [title length] && artist && [artist length], @"Required fields are empty.");
+                    
+                    [weakSelf deliverNotificationWithTitle:title subtitle:artist image:[NSURL URLWithString:art]];
+                }]];
+            }
         }
     }
 }
