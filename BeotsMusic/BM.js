@@ -78,8 +78,36 @@
 
   /** @constructor */
   function BM() {
-    // Keeping global functions. Don't forget to call/apply/bind these.
+    var _this = this;
+
+    // Injecting XHR open function.
+    /**
+     * @typedef {Function} BM~openCallback
+     * @param {XMLHttpRequest} openRequest
+     * @param {Arguments} openArguments
+     */
+    /** @type {Object.<string, BM~openCallback>} */
+    this._openCallbacks = {};
+
     this._open = window.XMLHttpRequest.prototype.open;
+    window.XMLHttpRequest.prototype.open = function() {
+      var openRequest = this,
+          openArguments = arguments,
+          openCallbacks = _this._openCallbacks;
+
+      // Callbacks.
+      for(var key in openCallbacks) {
+        var cb = openCallbacks[key];
+        if (typeof cb == 'function') {
+          cb(openRequest, openArguments);
+        }
+      }
+
+      // Continue and return.
+      return _this._open.apply(openRequest, openArguments);
+    };
+
+    // Keeping global functions. Don't forget to call/apply/bind these.
     this._dispatchEvent = window.dispatchEvent;
 
     // Keeping global objects.
@@ -217,10 +245,10 @@
       this._isListeningForTokens = true;
     }
 
-    // Construct a new function and replace it.
-    window.XMLHttpRequest.prototype.open = function open() {
-      // Assign another onload event.
-      this.addEventListener('load', function() {
+    // Listen for XHR open.
+    _this._openCallbacks['listenForTokens'] = function(openRequest, openArguments) {
+      // Assign a onload event.
+      openRequest.addEventListener('load', function() {
         var res = JSON.parse(this.responseText);
         // Set cookie for refresh requests.
         if (res.code == 'OK'
@@ -231,9 +259,6 @@
           setCookies(res.data, res.data.expires_at);
         }
       });
-
-      // Continue and return.
-      return _this._open.apply(this, arguments);
     };
 
     return true;
