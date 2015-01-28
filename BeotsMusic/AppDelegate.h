@@ -28,6 +28,7 @@ typedef enum : NSUInteger {
     BMAppleMikeyManager *mikeyManager;
     BMNotificationCapability capability;
     BMJSBridge *bmJS;
+    BOOL didFailPlayingWithoutFlash;
 }
 
 @property (assign) IBOutlet NSWindow *window;
@@ -60,6 +61,7 @@ typedef enum : NSUInteger {
 - (IBAction)hate:(id)sender;
 - (IBAction)addToMyLibrary:(id)sender;
 - (IBAction)deleteCookies:(id)sender;
+- (void)waitForFlash;
 
 - (void)deliverNotificationWithTitle:(NSString *)title subtitle:(NSString *)subtitle image:(NSURL *)imageURL;
 

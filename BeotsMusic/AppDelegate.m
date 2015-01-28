@@ -224,6 +224,38 @@ id tmpHostWindow;
                     [weakSelf deliverNotificationWithTitle:title subtitle:artist image:[NSURL URLWithString:art]];
                 }]];
             }
+            
+            // Try to play without Flash.
+            if (!didFailPlayingWithoutFlash) {
+                [bmJS callMethod:@"playWithoutFlash" withArguments:@[^(NSArray *arguments) {
+                    NSAssert(arguments && [arguments count], @"No argument given.");
+
+                    // Did it already fail once?
+                    if (didFailPlayingWithoutFlash) {
+                        return;
+                    } else {
+                        didFailPlayingWithoutFlash = YES;
+                    }
+
+                    // Try to work out the Flash fallback.
+                    CFBooleanRef isFlashInstalled = (__bridge CFBooleanRef)arguments[0];
+                    NSAssert(isFlashInstalled == kCFBooleanTrue || isFlashInstalled == kCFBooleanFalse, @"isFlashInstalled is not true nor false.");
+                    
+                    NSString *title = @"There was an error loading the track.";
+                    NSString *msgFormat = @"The workaround to avoid Beats Music's requirement of Flash has failed.\n\n%@";
+                    
+                    // If Flash is installed, simply reload the page.
+                    if (isFlashInstalled == kCFBooleanTrue) {
+                        [frame reload];
+                        
+                        NSBeginCriticalAlertSheet(title, @"Close", NULL, NULL, window, self, NULL, NULL, NULL, msgFormat, @"Flash Player will be loaded from now on.");
+                    }
+                    // If not, ask users to download and install it, and wait for it to be installed.
+                    else {
+                        NSBeginCriticalAlertSheet(title, @"Install", @"Cancel", NULL, window, self, NULL, @selector(sheetDidDismiss:returnCode:contextInfo:), @"installFlash", msgFormat, @"Please install Adobe Flash Player for Safari to play music.");
+                    }
+                }]];
+            }
         }
     }
 }
@@ -387,6 +419,22 @@ id tmpHostWindow;
     }
 }
 
+- (void)waitForFlash
+{
+    // Is Flash installed?
+    CFBooleanRef isFlashInstalled = (__bridge CFBooleanRef)[bmJS callMethod:@"isFlashInstalled" withArguments:@[@YES]]; // Refresh!
+    NSAssert(isFlashInstalled == kCFBooleanTrue || isFlashInstalled == kCFBooleanFalse, @"isFlashInstalled is not true nor false.");
+
+    // Yes, simply reload the page.
+    if (isFlashInstalled == kCFBooleanTrue) {
+        [webView reload:nil];
+    }
+    // No, alert.
+    else {
+        NSBeginCriticalAlertSheet(@"Flash plugin could not be found.", @"Retry", @"Cancel", NULL, window, self, NULL, @selector(sheetDidDismiss:returnCode:contextInfo:), @"waitForFlash", @"Please install Adobe Flash Player for Safari and try again.");
+    }
+}
+
 - (void)deliverNotificationWithTitle:(NSString *)title subtitle:(NSString *)subtitle image:(NSURL *)imageURL
 {
     // Unsupported.
@@ -525,6 +573,16 @@ id tmpHostWindow;
     }
     else if ([method isEqualToString:@"deleteCookies"] && returnCode == NSAlertDefaultReturn) {
         [self deleteCookies:nil];
+    }
+    else if ([method isEqualToString:@"installFlash"] && returnCode == NSAlertDefaultReturn) {
+        // Open the download page.
+        [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://get.adobe.com/flashplayer/"]];
+        
+        // Wait for Flash to be installed.
+        [self performSelector:@selector(waitForFlash) withObject:nil afterDelay:10];
+    }
+    else if ([method isEqualToString:@"waitForFlash"] && returnCode == NSAlertDefaultReturn) {
+        [self waitForFlash];
     }
 }
 
