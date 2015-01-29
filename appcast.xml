@@ -6,8 +6,13 @@
 			<description>Most recent changes with links to updates.</description>
 			<language>en</language>
 				 <item>
-						<title>Version 0.4</title>
+						<title>Version 0.5</title>
 						<description><![CDATA[
+							<h2>0.5 (January 30, 2015)</h2>
+							<ul>
+								<li>No more Flash! Tracks will play even though Flash plugin is not installed on your Mac.</li>
+							</ul>
+
 							<h2>0.4 (January 6, 2015)</h2>
 							<ul>
 								<li>Fixed a bug that prevented Twitter users from logging in.</li>
@@ -30,8 +35,8 @@
 								<li>Minor bug fixes.</li>
 							</ul>
 						]]></description>
-						<pubDate>Tue, 06 Jan 2015 00:00:00 +0900</pubDate>
-						<enclosure url="https://github.com/kiding/beotsmusic/releases/download/0.4/BeotsMusic.dmg" sparkle:version="0.4" length="4812821" type="application/octet-stream" sparkle:dsaSignature="MCwCFFTZmPt/p751YEqTVdrdCMtdhIWSAhRoGt7iobCYHtPukPe8x63+T12eKw==" />
+						<pubDate>Fri, 30 Jan 2015 04:00:00 +0900</pubDate>
+						<enclosure url="https://github.com/kiding/beotsmusic/releases/download/0.5/BeotsMusic.dmg" sparkle:version="0.5" length="1647641" type="application/octet-stream" sparkle:dsaSignature="MC0CFQDJyM2dklQLq04owG9xhEceu3RR1AIUTZJ0fDpEnlOnkdIqEqj2yaXea3M=" />
 				 </item>
 	 </channel>
 </rss>
