@@ -36,7 +36,7 @@
 							</ul>
 						]]></description>
 						<pubDate>Fri, 30 Jan 2015 04:00:00 +0900</pubDate>
-						<enclosure url="https://github.com/kiding/beotsmusic/releases/download/0.5/BeotsMusic.dmg" sparkle:version="0.5" length="1647641" type="application/octet-stream" sparkle:dsaSignature="MC0CFQDJyM2dklQLq04owG9xhEceu3RR1AIUTZJ0fDpEnlOnkdIqEqj2yaXea3M=" />
+						<enclosure url="https://github.com/kiding/beotsmusic/releases/download/0.5/BeotsMusic.dmg" sparkle:version="0.5" length="4765922" type="application/octet-stream" sparkle:dsaSignature="MC0CFQDJxtOHH0jCWnvB8uHVc/wT2jyNZwIURcsmXy3ozPM2Bp22QdLeKlCnE5E=" />
 				 </item>
 	 </channel>
 </rss>
