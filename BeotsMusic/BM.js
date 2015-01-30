@@ -496,7 +496,7 @@
               var succeed = false;
               try {
                 var res = JSON.parse(this.responseText);
-                if (res && (res.code == 'OK' || res.code == 'StreamRightsUnavailable')) {
+                if (res && ['OK', 'StreamRightsUnavailable', 'SubscriptionUpgradeRequired'].indexOf(res.code) > -1) {
                   succeed = true;
                 }
               } catch (e) {}
