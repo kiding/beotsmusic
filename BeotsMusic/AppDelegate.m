@@ -30,9 +30,6 @@
 @synthesize window;
 @synthesize urlPromptController;
 
-id contentView;
-id tmpHostWindow;
-
 + (void)initialize;
 {
 	if([self class] != [AppDelegate class]) return;
@@ -130,36 +127,13 @@ id tmpHostWindow;
     [webView setPolicyDelegate:self];
 
     [urlPromptController setNavigateDelegate:self];
-    
-    // stored for adding back later, see windowWillClose
-    contentView = [window contentView];
-}
-
-- (void)windowDidBecomeKey:(NSNotification *)notification
-{
-    // restore "hidden" webview, see windowShouldClose
-    // (would be better to do it in applicationShouldHandleReopen
-    // but that seems to be too early (has no effect)
-    if ([window contentView] != contentView) {
-        [window setContentView:contentView];
-        [webView setHostWindow:nil];
-        tmpHostWindow = nil;
-    }
 }
 
 - (BOOL)windowShouldClose:(NSNotification *)notification
 {
-    // set temporary hostWindow on WebView and remove it from
-    // the closed window to prevent stopping flash plugin
-    // (windowWillClose would be better but that doesn't always work)
-    // http://stackoverflow.com/questions/5307423/plugin-objects-in-webview-getting-destroyed
-    // https://developer.apple.com/library/mac/documentation/Cocoa/Reference/WebKit/Classes/WebView_Class/Reference/Reference.html#//apple_ref/occ/instm/WebView/setHostWindow%3a
-    tmpHostWindow = [[NSWindow alloc] init];
-    [webView setHostWindow:tmpHostWindow];
-    [window setContentView:nil];
-    [contentView removeFromSuperview];
-    
-    return TRUE;
+    // Hide the window.
+    [window orderOut:self];
+    return NO;
 }
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification

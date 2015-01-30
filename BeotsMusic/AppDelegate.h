@@ -40,7 +40,6 @@ typedef enum : NSUInteger {
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification;
 - (BOOL)applicationShouldHandleReopen:(NSApplication *)theApplication hasVisibleWindows:(BOOL)flag;
 - (void)awakeFromNib;
-- (void)windowDidBecomeKey:(NSNotification *)notification;
 - (BOOL)windowShouldClose:(NSNotification *)notification;
 - (void)applicationWillTerminate:(NSNotification *)aNotification;
 
