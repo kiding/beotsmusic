@@ -6,8 +6,14 @@
 			<description>Most recent changes with links to updates.</description>
 			<language>en</language>
 				 <item>
-						<title>Version 0.5</title>
+						<title>Version 0.6</title>
 						<description><![CDATA[
+							<h2>0.6 (January 31, 2015)</h2>
+							<ul>
+								<li>Fixed the bug that stopped the music when the window is closed.</li>
+								<li>Fixed the bug that prompted the error dialog if the account is not subscribed.</li>
+							</ul>
+
 							<h2>0.5 (January 30, 2015)</h2>
 							<ul>
 								<li>No more Flash! Tracks will play even though Flash plugin is not installed on your Mac.</li>
@@ -35,8 +41,8 @@
 								<li>Minor bug fixes.</li>
 							</ul>
 						]]></description>
-						<pubDate>Fri, 30 Jan 2015 04:00:00 +0900</pubDate>
-						<enclosure url="https://github.com/kiding/beotsmusic/releases/download/0.5/BeotsMusic.dmg" sparkle:version="0.5" length="4765922" type="application/octet-stream" sparkle:dsaSignature="MC0CFQDJxtOHH0jCWnvB8uHVc/wT2jyNZwIURcsmXy3ozPM2Bp22QdLeKlCnE5E=" />
+						<pubDate>Fri, 31 Jan 2015 01:00:00 +0900</pubDate>
+						<enclosure url="https://github.com/kiding/beotsmusic/releases/download/0.6/BeotsMusic.dmg" sparkle:version="0.6" length="4589794" type="application/octet-stream" sparkle:dsaSignature="MCwCFGbAFwO140w9q9CgDoa6ZITNiPu6AhQ1ZbqmtWEFhhxVC4UlIYTUDjXBBw==" />
 				 </item>
 	 </channel>
 </rss>
