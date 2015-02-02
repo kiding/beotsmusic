@@ -327,6 +327,15 @@
 			case NX_KEYTYPE_REWIND:
                 [self prev];
 				break;
+                
+            case NX_KEYTYPE_PREVIOUS:
+                [self prev];
+                break;
+                
+            case NX_KEYTYPE_NEXT:
+                [self next];
+                break;
+                
 			default:
 				NSLog(@"Key %d pressed", keyCode);
 				break;
