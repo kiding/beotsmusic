@@ -780,5 +780,13 @@
     }
   };
 
+  /**
+   * @return {boolean}
+   * @description Checks if any :focus pseudo class element exists.
+   */
+  BM.prototype.isOnFocus = function isOnFocus() {
+    return !!window.document.querySelector(':focus');
+  };
+
   return new BM();
 })(window);
