@@ -6,8 +6,14 @@
 			<description>Most recent changes with links to updates.</description>
 			<language>en</language>
 				 <item>
-						<title>Version 0.6</title>
+						<title>Version 0.7</title>
 						<description><![CDATA[
+							<h2>0.7 (Feburary 5, 2015)</h2>
+							<ul>
+								<li>Support for non-Apple keyboards.</li>
+								<li>Play or pause on space bar.</li>
+							</ul>
+
 							<h2>0.6 (January 31, 2015)</h2>
 							<ul>
 								<li>Fixed the bug that stopped the music when the window is closed.</li>
@@ -41,8 +47,8 @@
 								<li>Minor bug fixes.</li>
 							</ul>
 						]]></description>
-						<pubDate>Fri, 31 Jan 2015 01:00:00 +0900</pubDate>
-						<enclosure url="https://github.com/kiding/beotsmusic/releases/download/0.6/BeotsMusic.dmg" sparkle:version="0.6" length="4589794" type="application/octet-stream" sparkle:dsaSignature="MCwCFGbAFwO140w9q9CgDoa6ZITNiPu6AhQ1ZbqmtWEFhhxVC4UlIYTUDjXBBw==" />
+						<pubDate>Fri, 05 Feb 2015 21:00:00 +0900</pubDate>
+						<enclosure url="https://github.com/kiding/beotsmusic/releases/download/0.7/BeotsMusic.dmg" sparkle:version="0.7" length="4827243" type="application/octet-stream" sparkle:dsaSignature="MCwCFAOS+GlZMnsCXQ5C830hHBSMh4zPAhRtqnFE5tFvyuXjBbsVfTd0R0O+lA==" />
 				 </item>
 	 </channel>
 </rss>
