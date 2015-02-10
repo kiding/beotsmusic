@@ -550,11 +550,27 @@
 
 #pragma mark - NSUserNotificationCenterDelegate
 
-- (void)userNotificationCenter:(NSUserNotificationCenter *)center
-       didActivateNotification:(NSUserNotification *)notification
+- (void)userNotificationCenter:(NSUserNotificationCenter *)center didActivateNotification:(NSUserNotification *)notification
 {
+    // Clicked Skip Button.
     if(notification.activationType == NSUserNotificationActivationTypeActionButtonClicked) {
         [self next];
+    }
+    // Clicked somewhere else.
+    else {
+        [window makeKeyAndOrderFront:self];
+    }
+}
+
+- (BOOL)userNotificationCenter:(NSUserNotificationCenter *)center shouldActivateForNotification:(NSUserNotification *)notification
+{
+    // Clicked Skip Button.
+    if(notification.activationType == NSUserNotificationActivationTypeActionButtonClicked) {
+        return NO;
+    }
+    // Clicked somewhere else.
+    else {
+        return YES;
     }
 }
 

@@ -80,6 +80,7 @@ typedef enum : NSUInteger {
 - (void) mikeyDidPrevious;
 
 - (void)userNotificationCenter:(NSUserNotificationCenter *)center didActivateNotification:(NSUserNotification *)notification;
+- (BOOL)userNotificationCenter:(NSUserNotificationCenter *)center shouldActivateForNotification:(NSUserNotification *)notification;
 
 - (void) sheetDidDismiss:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void  *)contextInfo;
 @end
