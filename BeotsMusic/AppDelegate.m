@@ -474,6 +474,20 @@
     [bmJS callMethod:@"prev"];
 }
 
+- (void)pause
+{
+    if ([self isPlaying]) {
+        [self playPause];
+    }
+}
+
+- (void)play
+{
+    if (![self isPlaying]) {
+        [self playPause];
+    }
+}
+
 - (void)playPause
 {
     [bmJS callMethod:@"playPause"];

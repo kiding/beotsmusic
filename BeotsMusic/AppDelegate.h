@@ -66,6 +66,8 @@ typedef enum : NSUInteger {
 
 - (void)next;
 - (void)prev;
+- (void)pause;
+- (void)play;
 - (void)playPause;
 - (BOOL)isPlaying;
 
