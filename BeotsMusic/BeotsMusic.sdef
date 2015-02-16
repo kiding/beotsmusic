@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE dictionary SYSTEM "file://localhost/System/Library/DTDs/sdef.dtd">
+<dictionary title="Dictionary">
+    <suite name="BeotsMusic Suite" code="BeMu" description="Commands for BeotsMusic.">
+        <command name="love" code="BeMuLove" description="toggle the love state of the current track">
+            <cocoa class="BMScriptCommand"/>
+        </command>
+        <command name="hate" code="BeMuHate" description="toggle the hate state of the current track">
+            <cocoa class="BMScriptCommand"/>
+        </command>
+        <command name="add to my library" code="BeMuATML" description="add the current track to my library">
+            <cocoa class="BMScriptCommand"/>
+        </command>
+        <command name="next track" code="BeMuNeTr" description="advance to the next track in the current playlist">
+            <cocoa class="BMScriptCommand"/>
+        </command>
+        <command name="back track" code="BeMuBaTr" description="reposition to beginning of current track or go to previous track if already at start of current track">
+            <cocoa class="BMScriptCommand"/>
+		</command>
+        <command name="pause" code="BeMuPaus" description="pause playback">
+            <cocoa class="BMScriptCommand"/>
+        </command>
+        <command name="play" code="BeMuPlay" description="play the current track">
+            <cocoa class="BMScriptCommand"/>
+        </command>
+        <command name="playpause" code="BeMuPlPa" description="toggle the playing/paused state of the current track">
+            <cocoa class="BMScriptCommand"/>
+        </command>
+    </suite>
+</dictionary>
