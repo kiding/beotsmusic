@@ -88,8 +88,12 @@
     [prefs setCacheModel:WebCacheModelPrimaryWebBrowser];
     [prefs setPlugInsEnabled:TRUE]; // Flash is required
     
-    [prefs _setLocalStorageDatabasePath:@"~/Library/Application Support/BeotsMusic"];
-    [prefs setLocalStorageEnabled:YES];
+    if ([prefs respondsToSelector:@selector(_setLocalStorageDatabasePath:)]) {
+        [prefs _setLocalStorageDatabasePath:@"~/Library/Application Support/BeotsMusic"];
+    }
+    if ([prefs respondsToSelector:@selector(setLocalStorageEnabled:)]) {
+        [prefs setLocalStorageEnabled:YES];
+    }
     
     [prefs setJavaScriptEnabled:YES];
     [prefs setPrivateBrowsingEnabled:NO];
