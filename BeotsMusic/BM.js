@@ -302,6 +302,7 @@
 
     /** @type {BM~playerState} */
     var state = {
+      active: false,
       playing: false,
       trackId: null
     };
@@ -633,7 +634,7 @@
    * @description Clicks the love button.
    */
   BM.prototype.love = function love() {
-    return click(window.document.getElementById('t-love'));
+    return this._currentPlayerState().active && click(window.document.getElementById('t-love'));
   };
 
   /** 
@@ -641,7 +642,7 @@
    * @description Clicks the hate button.
    */
   BM.prototype.hate = function hate() {
-    return click(window.document.getElementById('t-hate'));
+    return this._currentPlayerState().active && click(window.document.getElementById('t-hate'));
   };
 
   /** 
@@ -649,7 +650,7 @@
    * @description Clicks the prev button.
    */
   BM.prototype.prev = function prev() {
-    return click(window.document.getElementById('t-prev'));
+    return this._currentPlayerState().active && click(window.document.getElementById('t-prev'));
   };
 
   /** 
@@ -657,7 +658,7 @@
    * @description Clicks the next button.
    */
   BM.prototype.next = function next() {
-    return click(window.document.getElementById('t-next'));
+    return this._currentPlayerState().active && click(window.document.getElementById('t-next'));
   };
 
   /** 
@@ -665,7 +666,7 @@
    * @description Clicks the play/pause button.
    */
   BM.prototype.playPause = function playPause() {
-    return click(window.document.getElementById('t-play'));
+    return this._currentPlayerState().active && click(window.document.getElementById('t-play'));
   };
 
   /** 
@@ -720,6 +721,7 @@
 
   /**
    * @typedef {Object} BM~playerState
+   * @property {boolean} active
    * @property {boolean} playing
    * @property {?string} trackId
    */
@@ -731,6 +733,7 @@
   BM.prototype._currentPlayerState = function _currentPlayerState() {
     /** @type {BM~playerState} */
     var state = {
+      active: false,
       playing: false,
       trackId: null
     };
@@ -744,6 +747,9 @@
     if (window.document.getElementsByClassName('transport--hidden').length) {
       return state; // false & null
     }
+
+    // It seems the player is ready.
+    state.active = true;
 
     // Parse localStorage for info.
     try {
