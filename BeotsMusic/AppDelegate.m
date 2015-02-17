@@ -528,20 +528,27 @@
 
 - (void)didPressSpaceBarKey:(NSNotification *)notification
 {
+    NSEvent *event = (NSEvent *)notification.object;
+    NSWindow *target = event.window;
+    
+    BOOL isWindow = (window == target);
     BOOL isOnFocus = (__bridge CFBooleanRef)[bmJS callMethod:@"isOnFocus"] == kCFBooleanTrue;
     
     /**
-     * Send the keyevent to the window if the user is trying to type something.
-     * This would behave the usual space bar key actions, mostly white space.
+     * If the keyevent happened to the main window,
+     * and the user is not trying to type anything,
+     * try to trigger play/pause - like any other music player.
+     * Ignore the cases that the trigger would do nothing,
+     * usually in pages other than the Beats Music web app.
      *
-     * If not, try to trigger play/pause - like any other music player.
-     * Ignore the cases that the trigger would do nothing, usually in pages other than the Beats Music web app.
+     * In any other cases, simply send the event to the window.
+     * This would behave the usual space bar key actions,
+     * mostly white space input or cancelling the alert sheet.
      */
-    if (isOnFocus) {
-        NSEvent *event = (NSEvent *)notification.object;
-        [event.window sendEvent:event];
-    } else {
+    if (isWindow && !isOnFocus) {
         [self playPause];
+    } else {
+        [target sendEvent:event];
     }
 }
 
