@@ -6,8 +6,16 @@
 			<description>Most recent changes with links to updates.</description>
 			<language>en</language>
 				 <item>
-						<title>Version 0.7</title>
+						<title>Version 0.8</title>
 						<description><![CDATA[
+							<h2>0.8 (Feburary 17, 2015)</h2>
+							<ul>
+								<li>AppleScript support!</li>
+								<li>Skip button on a notification won't activate the application anymore.</li>
+								<li>Fixed space bar events to work expectedly on other windows.</li>
+								<li>Fixed the bug that prompted the error dialog on pressing media keys if no track is being played.</li>
+							</ul>
+
 							<h2>0.7 (Feburary 5, 2015)</h2>
 							<ul>
 								<li>Support for non-Apple keyboards.</li>
@@ -47,8 +55,8 @@
 								<li>Minor bug fixes.</li>
 							</ul>
 						]]></description>
-						<pubDate>Fri, 05 Feb 2015 21:00:00 +0900</pubDate>
-						<enclosure url="https://github.com/kiding/beotsmusic/releases/download/0.7/BeotsMusic.dmg" sparkle:version="0.7" length="4827243" type="application/octet-stream" sparkle:dsaSignature="MCwCFAOS+GlZMnsCXQ5C830hHBSMh4zPAhRtqnFE5tFvyuXjBbsVfTd0R0O+lA==" />
+						<pubDate>Fri, 17 Feb 2015 19:00:00 +0900</pubDate>
+						<enclosure url="https://github.com/kiding/beotsmusic/releases/download/0.8/BeotsMusic.dmg" sparkle:version="0.8" length="4839531" type="application/octet-stream" sparkle:dsaSignature="MC0CFFBK/7sanCQ7Lpj8fxrXQyFYS47YAhUAgfo6QeDy90FajoDWhKMUiZGVGZk=" />
 				 </item>
 	 </channel>
 </rss>
