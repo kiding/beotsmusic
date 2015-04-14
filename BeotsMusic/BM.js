@@ -58,7 +58,7 @@
     if (obj && expires_at) {
       // Make max-age, suffix.
       var maxAge = timeSinceNow(expires_at),
-          suffix = ';path=/;domain=.beatsmusic.com;max-age=' + maxAge + ';secure';
+          suffix = ';path=/;domain=.beatsmusic.com;max-age=' + maxAge;
 
       // Get the current cookies.
       var coo = getCookies();
