@@ -30,6 +30,19 @@
 @synthesize window;
 @synthesize urlPromptController;
 
++ (BOOL)isBMURL:(NSURL *)url
+{
+    if(url != nil) {
+        NSString *host = [url host];
+        NSString *path = [url path];
+        if([host isEqualToString:BMHost]
+           || ([host isEqualToString:BMAccountHost] && ([path isEqualToString:BMLoginPath] || [path isEqualToString:BMLogoutPath]))) {
+            return TRUE;
+        }
+    }
+    return FALSE;
+}
+
 + (void)initialize;
 {
 	if([self class] != [AppDelegate class]) return;
@@ -39,6 +52,18 @@
                                                              [SPMediaKeyTap defaultMediaKeyUserBundleIdentifiers], kMediaKeyUsingBundleIdentifiersDefaultsKey,
                                                              nil]];
 }
+
+- (void)awakeFromNib
+{
+    [window setDelegate:self];
+    [webView setUIDelegate:self];
+    [webView setFrameLoadDelegate:self];
+    [webView setPolicyDelegate:self];
+    
+    [urlPromptController setNavigateDelegate:self];
+}
+
+#pragma mark - NSApplicationDelegate
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
@@ -123,16 +148,6 @@
 }
 
 
-- (void)awakeFromNib
-{
-    [window setDelegate:self];
-    [webView setUIDelegate:self];
-    [webView setFrameLoadDelegate:self];
-    [webView setPolicyDelegate:self];
-
-    [urlPromptController setNavigateDelegate:self];
-}
-
 - (BOOL)windowShouldClose:(NSNotification *)notification
 {
     // Hide the window.
@@ -154,11 +169,7 @@
     }
 }
 
-- (WebView *)webView:(WebView *)sender createWebViewWithRequest:(NSURLRequest *)request
-{
-    // request will always be null (probably a bug)
-    return [popupController show];
-}
+#pragma mark - WebFrameLoadDelegate
 
 // http://stackoverflow.com/questions/7020842/
 - (void)webView:(WebView *)sender didFinishLoadForFrame:(WebFrame *)frame {
@@ -238,6 +249,54 @@
     }
 }
 
+- (void)deliverNotificationWithTitle:(NSString *)title subtitle:(NSString *)subtitle image:(NSURL *)imageURL
+{
+    // Unsupported.
+    if (capability <= BMNotificationCapabilityUnsupported) {
+        return;
+    }
+    
+    // Make a new notification.
+    NSUserNotification *notification = [[NSUserNotification alloc] init];
+    notification.title = title;
+    notification.subtitle = subtitle;
+    notification.actionButtonTitle = @"Skip"; // Skip button
+    [notification setValue:@YES forKey:@"_showsButtons"]; // Force-show buttons
+    
+    // Is imageURL provided and the OS capable?
+    if (imageURL && capability > BMNotificationCapabilityNoImage) {
+        NSURLRequest *request = [[NSURLRequest alloc] initWithURL:imageURL cachePolicy:0 timeoutInterval:60];
+        [NSURLConnection sendAsynchronousRequest:request
+                                           queue:[NSOperationQueue mainQueue]
+                               completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
+                                   // Make data an image, put it in the notification.
+                                   if (!connectionError && data) {
+                                       NSImage *image = [[NSImage alloc] initWithData:data];
+                                       
+                                       if (capability == BMNotificationCapabilityIdentityImage) {
+                                           [notification set_identityImage:image];
+                                       } else if (capability == BMNotificationCapabilityContentImage) {
+                                           [notification setContentImage:image];
+                                       }
+                                   }
+                                   
+                                   // Deliver the notification.
+                                   NSUserNotificationCenter *defaultCenter = [NSUserNotificationCenter defaultUserNotificationCenter];
+                                   [defaultCenter removeAllDeliveredNotifications];
+                                   [defaultCenter deliverNotification:notification];
+                               }];
+        
+    }
+    // No, deliver the notification right away.
+    else {
+        NSUserNotificationCenter *defaultCenter = [NSUserNotificationCenter defaultUserNotificationCenter];
+        [defaultCenter removeAllDeliveredNotifications];
+        [defaultCenter deliverNotification:notification];
+    }
+}
+
+#pragma mark - WebPolicyDelegate
+
 - (void)webView:(WebView *)sender decidePolicyForNavigationAction:(NSDictionary *)actionInformation
         request:(NSURLRequest *)request frame:(WebFrame *)frame decisionListener:(id)listener
 {
@@ -266,6 +325,14 @@
         [[NSWorkspace sharedWorkspace] openURL:[actionInformation objectForKey:WebActionOriginalURLKey]];
     }
 
+}
+
+#pragma mark - WebUIDelegate
+
+- (WebView *)webView:(WebView *)sender createWebViewWithRequest:(NSURLRequest *)request
+{
+    // request will always be null (probably a bug)
+    return [popupController show];
 }
 
 // based on http://stackoverflow.com/questions/5177640
@@ -309,6 +376,8 @@
         return NO;
 }
 
+#pragma mark - SPMediaKeyTapDelegate
+
 - (void)mediaKeyTap:(SPMediaKeyTap*)keyTap receivedMediaKeyEvent:(NSEvent*)event;
 {
 	NSAssert([event type] == NSSystemDefined && [event subtype] == SPSystemDefinedEventMediaKeys, @"Unexpected NSEvent in mediaKeyTap:receivedMediaKeyEvent:");
@@ -347,126 +416,7 @@
 	}
 }
 
-
-- (IBAction)restoreWindow:(id)sender
-{
-    [window makeKeyAndOrderFront:self];
-}
-
-- (IBAction)reload:(id)sender
-{
-    [webView reload:self];
-}
-
-- (IBAction)search:(id)sender
-{
-    [bmJS callMethod:@"search"];
-}
-
-- (IBAction)love:(id)sender
-{
-    [bmJS callMethod:@"love"];
-}
-
-- (IBAction)hate:(id)sender
-{
-    [bmJS callMethod:@"hate"];
-}
-
-- (IBAction)addToMyLibrary:(id)sender
-{
-    if ((__bridge CFBooleanRef)[bmJS callMethod:@"addToMyLibrary"] != kCFBooleanTrue) {
-        NSBeginCriticalAlertSheet(@"There was an error adding the current track to your library.", @"Retry", @"Cancel", NULL, window, self, NULL, @selector(sheetDidDismiss:returnCode:contextInfo:), @"addToMyLibrary", @"Please try again.");
-    }
-}
-
-- (IBAction)deleteCookies:(id)sender
-{
-    // User clicked "Delete Cookies..." menu item.
-    if (sender) {
-        NSBeginCriticalAlertSheet(@"Delete Cookies?", @"Proceed", @"Cancel", NULL, window, self, NULL, @selector(sheetDidDismiss:returnCode:contextInfo:), @"deleteCookies", @"This will clear cookies for Beats Music websites. Proceed if you're having trouble logging in.\nRemoving cookies will affect Safari too.");
-    }
-    // After the alert sheet.
-    else {
-        // Delete cookies for http, https and BMHost, BMAccountHost.
-        NSHTTPCookieStorage *sharedStorage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
-        for(NSString *protocol in @[@"http", @"https"]) {
-            for(NSString *domain in @[BMHost, BMAccountHost]) {
-                NSArray *cookies = [sharedStorage cookiesForURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@://%@", protocol, domain]]];
-                
-                for(NSHTTPCookie *cookie in cookies) {
-                    [sharedStorage deleteCookie:cookie];
-                }
-            }
-        }
-        
-        // Go back to the main page.
-        [webView setMainFrameURL:[@"https://" stringByAppendingString:BMHost]];
-        [webView reload:self];
-    }
-}
-
-- (void)waitForFlash
-{
-    // Is Flash installed?
-    CFBooleanRef isFlashInstalled = (__bridge CFBooleanRef)[bmJS callMethod:@"isFlashInstalled" withArguments:@[@YES]]; // Refresh!
-    NSAssert(isFlashInstalled == kCFBooleanTrue || isFlashInstalled == kCFBooleanFalse, @"isFlashInstalled is not true nor false.");
-
-    // Yes, simply reload the page.
-    if (isFlashInstalled == kCFBooleanTrue) {
-        [webView reload:nil];
-    }
-    // No, alert.
-    else {
-        NSBeginCriticalAlertSheet(@"Flash plugin could not be found.", @"Retry", @"Cancel", NULL, window, self, NULL, @selector(sheetDidDismiss:returnCode:contextInfo:), @"waitForFlash", @"Please install Adobe Flash Player for Safari and try again.");
-    }
-}
-
-- (void)deliverNotificationWithTitle:(NSString *)title subtitle:(NSString *)subtitle image:(NSURL *)imageURL
-{
-    // Unsupported.
-    if (capability <= BMNotificationCapabilityUnsupported) {
-        return;
-    }
-    
-    // Make a new notification.
-    NSUserNotification *notification = [[NSUserNotification alloc] init];
-    notification.title = title;
-    notification.subtitle = subtitle;
-    notification.actionButtonTitle = @"Skip"; // Skip button
-    [notification setValue:@YES forKey:@"_showsButtons"]; // Force-show buttons
-
-    // Is imageURL provided and the OS capable?
-    if (imageURL && capability > BMNotificationCapabilityNoImage) {
-        NSURLRequest *request = [[NSURLRequest alloc] initWithURL:imageURL cachePolicy:0 timeoutInterval:60];
-        [NSURLConnection sendAsynchronousRequest:request
-                                           queue:[NSOperationQueue mainQueue]
-                               completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
-                                   // Make data an image, put it in the notification.
-                                   if (!connectionError && data) {
-                                       NSImage *image = [[NSImage alloc] initWithData:data];
-                                       
-                                       if (capability == BMNotificationCapabilityIdentityImage) {
-                                           [notification set_identityImage:image];
-                                       } else if (capability == BMNotificationCapabilityContentImage) {
-                                           [notification setContentImage:image];
-                                       }
-                                   }
-                                   
-                                   // Deliver the notification.
-                                   NSUserNotificationCenter *defaultCenter = [NSUserNotificationCenter defaultUserNotificationCenter];
-                                   [defaultCenter removeAllDeliveredNotifications];
-                                   [defaultCenter deliverNotification:notification];
-                               }];
-
-    }
-    // No, deliver the notification right away.
-    else {
-        NSUserNotificationCenter *defaultCenter = [NSUserNotificationCenter defaultUserNotificationCenter];
-        [defaultCenter removeAllDeliveredNotifications];
-        [defaultCenter deliverNotification:notification];
-    }
-}
+#pragma mark - Menu Actions
 
 - (void)next
 {
@@ -492,14 +442,14 @@
     }
 }
 
+- (BOOL)isPlaying
+{
+    return (__bridge CFBooleanRef)[bmJS callMethod:@"isPlaying"] == kCFBooleanTrue;
+}
+
 - (void)playPause
 {
     [bmJS callMethod:@"playPause"];
-}
-
-- (BOOL)isPlaying
-{
-    return (__bridge CFBooleanRef)[bmJS callMethod:@"isPlaying"] == kCFBooleanTrue;;
 }
 
 - (void)navigate:(NSString*)permalink
@@ -507,27 +457,75 @@
     [bmJS callMethod:@"navigateTo" withArguments:@[permalink]];
 }
 
-+ (BOOL)isBMURL:(NSURL *)url
+- (IBAction)deleteCookies:(id)sender
 {
-    if(url != nil) {
-        NSString *host = [url host];
-        NSString *path = [url path];
-        if([host isEqualToString:BMHost]
-           || ([host isEqualToString:BMAccountHost] && ([path isEqualToString:BMLoginPath] || [path isEqualToString:BMLogoutPath]))) {
-            return TRUE;
-        }
+    // User clicked "Delete Cookies..." menu item.
+    if (sender) {
+        NSBeginCriticalAlertSheet(@"Delete Cookies?", @"Proceed", @"Cancel", NULL, window, self, NULL, @selector(sheetDidDismiss:returnCode:contextInfo:), @"deleteCookies", @"This will clear cookies for Beats Music websites. Proceed if you're having trouble logging in.\nRemoving cookies will affect Safari too.");
     }
-    return FALSE;
+    // After the alert sheet.
+    else {
+        // Delete cookies.
+        [self deleteCookies];
+        
+        // Go back to the main page.
+        [webView setMainFrameURL:[@"https://" stringByAppendingString:BMHost]];
+        [webView reload:self];
+    }
 }
 
+- (void)deleteCookies
+{
+    // Delete cookies for http, https and BMHost, BMAccountHost.
+    NSHTTPCookieStorage *sharedStorage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
+    for(NSString *protocol in @[@"http", @"https"]) {
+        for(NSString *domain in @[BMHost, BMAccountHost]) {
+            NSArray *cookies = [sharedStorage cookiesForURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@://%@", protocol, domain]]];
+            
+            for(NSHTTPCookie *cookie in cookies) {
+                [sharedStorage deleteCookie:cookie];
+            }
+        }
+    }
+}
+
+- (IBAction)search:(id)sender
+{
+    [bmJS callMethod:@"search"];
+}
+
+- (IBAction)love:(id)sender
+{
+    [bmJS callMethod:@"love"];
+}
+
+- (IBAction)hate:(id)sender
+{
+    [bmJS callMethod:@"hate"];
+}
+
+- (IBAction)addToMyLibrary:(id)sender
+{
+    if ((__bridge CFBooleanRef)[bmJS callMethod:@"addToMyLibrary"] != kCFBooleanTrue) {
+        NSBeginCriticalAlertSheet(@"There was an error adding the current track to your library.", @"Retry", @"Cancel", NULL, window, self, NULL, @selector(sheetDidDismiss:returnCode:contextInfo:), @"addToMyLibrary", @"Please try again.");
+    }
+}
+
+- (IBAction)reload:(id)sender
+{
+    [webView reload:self];
+}
+
+- (IBAction)restoreWindow:(id)sender
+{
+    [window makeKeyAndOrderFront:self];
+}
 
 #pragma mark - NSNotificationCenter Observers
 
 - (void)receiveSleepNotification:(NSNotification*)note
 {
-    if([self isPlaying]) {
-        [self playPause];
-    }
+    [self pause];
 }
 
 - (void)didPressSpaceBarKey:(NSNotification *)notification
@@ -558,17 +556,17 @@
 
 #pragma mark - BMAppleMikeyManagerDelegate
 
-- (void) mikeyDidPlayPause
+- (void)mikeyDidPlayPause
 {
     [self playPause];
 }
 
-- (void) mikeyDidNext
+- (void)mikeyDidNext
 {
     [self next];
 }
 
-- (void) mikeyDidPrevious
+- (void)mikeyDidPrevious
 {
     [self prev];
 }
@@ -601,7 +599,7 @@
 
 #pragma mark - NSBeginAlertSheet Modal Delegate
 
-- (void) sheetDidDismiss:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo
+- (void)sheetDidDismiss:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo
 {
     NSString *method = (__bridge NSString *)(contextInfo);
     
@@ -620,6 +618,22 @@
     }
     else if ([method isEqualToString:@"waitForFlash"] && returnCode == NSAlertDefaultReturn) {
         [self waitForFlash];
+    }
+}
+
+- (void)waitForFlash
+{
+    // Is Flash installed?
+    CFBooleanRef isFlashInstalled = (__bridge CFBooleanRef)[bmJS callMethod:@"isFlashInstalled" withArguments:@[@YES]]; // Refresh!
+    NSAssert(isFlashInstalled == kCFBooleanTrue || isFlashInstalled == kCFBooleanFalse, @"isFlashInstalled is not true nor false.");
+    
+    // Yes, simply reload the page.
+    if (isFlashInstalled == kCFBooleanTrue) {
+        [webView reload:nil];
+    }
+    // No, alert.
+    else {
+        NSBeginCriticalAlertSheet(@"Flash plugin could not be found.", @"Retry", @"Cancel", NULL, window, self, NULL, @selector(sheetDidDismiss:returnCode:contextInfo:), @"waitForFlash", @"Please install Adobe Flash Player for Safari and try again.");
     }
 }
 

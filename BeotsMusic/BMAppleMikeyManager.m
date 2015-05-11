@@ -11,7 +11,7 @@ typedef enum : NSUInteger {
     BMAppleMikeySoundDown
 } BMAppleMikeyCommand;
 
-#pragma mark Private Declaration
+#pragma mark - Private Declaration
 
 @interface BMAppleMikeyManager ()
 {
@@ -20,28 +20,28 @@ typedef enum : NSUInteger {
     NSTimer *_secureTimer;
 }
 
-- (void) dealloc;
+- (void)dealloc;
 
-- (void) startDummyManager;
-- (void) stopDummyManager;
-- (void) startValueManager;
-- (void) stopValueManager;
-- (void) startSecureTimer;
-- (void) stopSecureTimer;
+- (void)startDummyManager;
+- (void)stopDummyManager;
+- (void)startValueManager;
+- (void)stopValueManager;
+- (void)startSecureTimer;
+- (void)stopSecureTimer;
 
-- (void) dummyCallback;
-- (void) valueCallback: (BMAppleMikeyCommand) command;
-- (void) checkSecureEventInput;
+- (void)dummyCallback;
+- (void)valueCallback: (BMAppleMikeyCommand) command;
+- (void)checkSecureEventInput;
 
-- (void) mikeyDidPlayPause;
-- (void) mikeyDidNext;
-- (void) mikeyDidPrevious;
-- (void) mikeyDidSoundUp;
-- (void) mikeyDidSoundDown;
+- (void)mikeyDidPlayPause;
+- (void)mikeyDidNext;
+- (void)mikeyDidPrevious;
+- (void)mikeyDidSoundUp;
+- (void)mikeyDidSoundDown;
 
 @end
 
-#pragma mark Callback Function
+#pragma mark - Callback Function
 
 static void dummyCallback(void *                  context,
                           IOReturn                result,
@@ -76,16 +76,16 @@ static void valueCallback(void *                  context,
 
 @implementation BMAppleMikeyManager
 
-#pragma mark Lifecycle
+#pragma mark - Lifecycle
 
-- (void) dealloc
+- (void)dealloc
 {
     [self stopListening];
 }
 
-#pragma mark Public
+#pragma mark - Public
 
-- (void) startListening
+- (void)startListening
 {
     if(!_isListening) {
         /*
@@ -102,7 +102,7 @@ static void valueCallback(void *                  context,
     }
 }
 
-- (void) stopListening
+- (void)stopListening
 {
     if(_isListening) {
         _isListening = NO;
@@ -113,9 +113,9 @@ static void valueCallback(void *                  context,
     }
 }
 
-#pragma mark Listening
+#pragma mark - Listening
 
-- (void) startDummyManager
+- (void)startDummyManager
 {
     _dummyManager = IOHIDManagerCreate(kCFAllocatorDefault, kIOHIDOptionsTypeNone);
     if (IOHIDManagerOpen(_dummyManager, kIOHIDOptionsTypeNone) != kIOReturnSuccess) {
@@ -127,14 +127,14 @@ static void valueCallback(void *                  context,
     }
 }
 
-- (void) stopDummyManager
+- (void)stopDummyManager
 {
     IOHIDManagerClose(_dummyManager, kIOHIDOptionsTypeNone);
     CFRelease(_dummyManager);
     _dummyManager = NULL;
 }
 
-- (void) startValueManager
+- (void)startValueManager
 {
     _valueManager = IOHIDManagerCreate(kCFAllocatorDefault, kIOHIDOptionsTypeNone);
     if (IOHIDManagerOpen(_valueManager, kIOHIDOptionsTypeSeizeDevice) != kIOReturnSuccess) {
@@ -146,27 +146,27 @@ static void valueCallback(void *                  context,
     }
 }
 
-- (void) stopValueManager
+- (void)stopValueManager
 {
     IOHIDManagerClose(_valueManager, kIOHIDOptionsTypeNone);
     CFRelease(_valueManager);
     _valueManager = NULL;
 }
 
-- (void) startSecureTimer
+- (void)startSecureTimer
 {
     _secureTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(checkSecureEventInput) userInfo:nil repeats:YES];
 }
 
-- (void) stopSecureTimer
+- (void)stopSecureTimer
 {
     [_secureTimer invalidate];
     _secureTimer = nil;
 }
 
-#pragma mark Callbacks
+#pragma mark - Callbacks
 
-- (void) dummyCallback
+- (void)dummyCallback
 {
     if (_isListening) {
         // Re-open valueManager to re-acquire the exclusive access.
@@ -175,7 +175,7 @@ static void valueCallback(void *                  context,
     }
 }
 
-- (void) valueCallback: (BMAppleMikeyCommand) command
+- (void)valueCallback: (BMAppleMikeyCommand) command
 {
     if (_isListening) {
         // Route command!
@@ -203,7 +203,7 @@ static void valueCallback(void *                  context,
     }
 }
 
-- (void) checkSecureEventInput
+- (void)checkSecureEventInput
 {
     // Check if SecureEventInput is currently enabled.
     if(_isListening && IsSecureEventInputEnabled()) {
@@ -211,9 +211,9 @@ static void valueCallback(void *                  context,
     }
 }
 
-#pragma mark BMAppleMikeyManagerDelegate
+#pragma mark - BMAppleMikeyManagerDelegate
 
-- (void) mikeyDidPlayPause
+- (void)mikeyDidPlayPause
 {
     if([_delegate respondsToSelector:_cmd]) {
         [_delegate mikeyDidPlayPause];
@@ -222,7 +222,7 @@ static void valueCallback(void *                  context,
     }
 }
 
-- (void) mikeyDidNext
+- (void)mikeyDidNext
 {
     if([_delegate respondsToSelector:_cmd]) {
         [_delegate mikeyDidNext];
@@ -231,7 +231,7 @@ static void valueCallback(void *                  context,
     }
 }
 
-- (void) mikeyDidPrevious
+- (void)mikeyDidPrevious
 {
     if([_delegate respondsToSelector:_cmd]) {
         [_delegate mikeyDidPrevious];
@@ -240,7 +240,7 @@ static void valueCallback(void *                  context,
     }
 }
 
-- (void) mikeyDidSoundUp
+- (void)mikeyDidSoundUp
 {
     if([_delegate respondsToSelector:_cmd]) {
         [_delegate mikeyDidSoundUp];
@@ -249,7 +249,7 @@ static void valueCallback(void *                  context,
     }
 }
 
-- (void) mikeyDidSoundDown
+- (void)mikeyDidSoundDown
 {
     if([_delegate respondsToSelector:_cmd]) {
         [_delegate mikeyDidSoundDown];

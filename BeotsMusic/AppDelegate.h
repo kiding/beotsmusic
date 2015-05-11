@@ -36,53 +36,76 @@ typedef enum : NSUInteger {
 @property (weak) IBOutlet PopupController *popupController;
 @property (weak) IBOutlet UrlPromptController *urlPromptController;
 
++ (BOOL)isBMURL:(NSURL *)url;
 + (void)initialize;
+- (void)awakeFromNib;
+
+#pragma mark - NSApplicationDelegate
+
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification;
 - (BOOL)applicationShouldHandleReopen:(NSApplication *)theApplication hasVisibleWindows:(BOOL)flag;
-- (void)awakeFromNib;
 - (BOOL)windowShouldClose:(NSNotification *)notification;
 - (void)applicationWillTerminate:(NSNotification *)aNotification;
 
-- (WebView *)webView:(WebView *)sender createWebViewWithRequest:(NSURLRequest *)request;
+#pragma mark - WebFrameLoadDelegate
+
 - (void)webView:(WebView *)sender didFinishLoadForFrame:(WebFrame *)frame;
 - (void)webView:(WebView *)sender didReceiveTitle:(NSString *)title forFrame:(WebFrame *)frame;
 - (void)webView:(WebView *)sender didClearWindowObject:(WebScriptObject *)windowObject forFrame:(WebFrame *)frame;
+- (void)deliverNotificationWithTitle:(NSString *)title subtitle:(NSString *)subtitle image:(NSURL *)imageURL;
+
+#pragma mark - WebPolicyDelegate
+
 - (void)webView:(WebView *)sender decidePolicyForNavigationAction:(NSDictionary *)actionInformation
         request:(NSURLRequest *)request frame:(WebFrame *)frame decisionListener:(id)listener;
 - (void)webView:(WebView *)webView decidePolicyForNewWindowAction:(NSDictionary *)actionInformation request:(NSURLRequest *)request newFrameName:(NSString *)frameName decisionListener:(id < WebPolicyDecisionListener >)listener;
+
+#pragma mark - WebUIDelegate
+
+- (WebView *)webView:(WebView *)sender createWebViewWithRequest:(NSURLRequest *)request;
 - (void)webView:(WebView *)sender runOpenPanelForFileButtonWithResultListener:(id < WebOpenPanelResultListener >)resultListener allowMultipleFiles:(BOOL)allowMultipleFiles;
 - (BOOL)webView:(WebView *)sender runJavaScriptConfirmPanelWithMessage:(NSString *)message initiatedByFrame:(WebFrame *)frame;
 
-- (IBAction)restoreWindow:(id)sender;
-- (IBAction)reload:(id)sender;
-- (IBAction)search:(id)sender;
-- (IBAction)love:(id)sender;
-- (IBAction)hate:(id)sender;
-- (IBAction)addToMyLibrary:(id)sender;
-- (IBAction)deleteCookies:(id)sender;
-- (void)waitForFlash;
+#pragma mark - SPMediaKeyTapDelegate
 
-- (void)deliverNotificationWithTitle:(NSString *)title subtitle:(NSString *)subtitle image:(NSURL *)imageURL;
+- (void)mediaKeyTap:(SPMediaKeyTap*)keyTap receivedMediaKeyEvent:(NSEvent*)event;
+
+#pragma mark - User Actions
 
 - (void)next;
 - (void)prev;
 - (void)pause;
 - (void)play;
-- (void)playPause;
 - (BOOL)isPlaying;
-
+- (void)playPause;
 - (void)navigate:(NSString*)permalink;
-+ (BOOL)isBMURL:(NSURL *)url;
+- (IBAction)deleteCookies:(id)sender;
+- (void)deleteCookies;
+- (IBAction)search:(id)sender;
+- (IBAction)love:(id)sender;
+- (IBAction)hate:(id)sender;
+- (IBAction)addToMyLibrary:(id)sender;
+- (IBAction)reload:(id)sender;
+- (IBAction)restoreWindow:(id)sender;
+
+#pragma mark - NSNotificationCenter Observers
 
 - (void)receiveSleepNotification:(NSNotification*)note;
 - (void)didPressSpaceBarKey:(NSNotification *)notification;
 
-- (void) mikeyDidPlayPause;
-- (void) mikeyDidNext;
-- (void) mikeyDidPrevious;
+#pragma mark - BMAppleMikeyManagerDelegate
+
+- (void)mikeyDidPlayPause;
+- (void)mikeyDidNext;
+- (void)mikeyDidPrevious;
+
+#pragma mark - NSUserNotificationCenterDelegate
 
 - (void)userNotificationCenter:(NSUserNotificationCenter *)center didActivateNotification:(NSUserNotification *)notification;
 - (BOOL)userNotificationCenter:(NSUserNotificationCenter *)center shouldActivateForNotification:(NSUserNotification *)notification;
 
-- (void) sheetDidDismiss:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void  *)contextInfo;
+#pragma mark - NSBeginAlertSheet Modal Delegate
+
+- (void)sheetDidDismiss:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo;
+- (void)waitForFlash;
 @end

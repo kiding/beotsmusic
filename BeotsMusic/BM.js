@@ -122,62 +122,6 @@
     }
   };
 
-  /**
-   * @typedef {Object} BM~ajax
-   * @property {?string} type
-   * @property {string} url
-   * @property {?Object.<string, string>} data
-   * @property {?Object.<string, string>} headers
-   */
-
-  /**
-   * @param {BM~ajax} settings
-   * @return {?Object}
-   * @description Sends a synchronous XHR request and returns the response. nil if the request failed or the response is not JSON.
-   */
-  BM.prototype._ajax = function _ajax(settings) {
-    settings = settings || {};
-
-    if (!settings.url) {
-      return null;
-    }
-
-    var _open = this._open || window.XMLHttpRequest.prototype.open,
-        type = (settings.type && settings.type.toUpperCase()) || 'GET',
-        url = settings.url + '',
-        data = JSON.stringify(settings.data || undefined) || undefined,
-        headers = settings.headers || {},
-        request = new window.XMLHttpRequest;
-
-    // Necessary settings.
-    headers['Accept'] = 'application/json, text/javascript, */*; q=0.01';
-    if (data) {
-      headers['Content-Type'] = 'application/json';
-    }
-
-    // Open!
-    _open.call(request, type, url, false);
-
-    // Assign headers.
-    for(var key in headers) {
-      request.setRequestHeader(key, headers[key]);
-    }
-
-    // Send data.
-    request.send(data);
-
-    // Parse the response.
-    if (request.readyState == 4 && request.status == 200) {
-      try {
-        return JSON.parse(request.responseText);
-      } catch (e) {
-        return null;
-      }
-    } else {
-      return null;
-    }
-  }
-
   /** 
    * @return {boolean}
    * @description Synchronously refreshes login tokens by explicitly calling Beats Music API.
@@ -357,24 +301,6 @@
     }, 750);
 
     return true;
-  };
-
-  /**
-   * @return {boolean}
-   * @param {boolean} refresh - Calls navigator.plugins.refresh(false)
-   * @description Returns if Flash plugin is installed.
-   */
-  BM.prototype.isFlashInstalled = function isFlashInstalled(refresh) {
-    var navi = this._navigator,
-        plugins = navi && navi.plugins,
-        mimeTypes = navi && navi.mimeTypes,
-        type = 'application/x-shockwave-flash';
-
-    if (!!refresh) {
-      plugins.refresh(false);
-    }
-
-    return !!(plugins && plugins.length && mimeTypes && mimeTypes[type] && mimeTypes[type].enabledPlugin && mimeTypes[type].enabledPlugin.description);
   };
 
   /**
@@ -621,6 +547,115 @@
     return true;
   };
 
+  /**
+   * @return {boolean}
+   * @param {boolean} refresh - Calls navigator.plugins.refresh(false)
+   * @description Returns if Flash plugin is installed.
+   */
+  BM.prototype.isFlashInstalled = function isFlashInstalled(refresh) {
+    var navi = this._navigator,
+        plugins = navi && navi.plugins,
+        mimeTypes = navi && navi.mimeTypes,
+        type = 'application/x-shockwave-flash';
+
+    if (!!refresh) {
+      plugins.refresh(false);
+    }
+
+    return !!(plugins && plugins.length && mimeTypes && mimeTypes[type] && mimeTypes[type].enabledPlugin && mimeTypes[type].enabledPlugin.description);
+  };
+
+  /** 
+   * @return {boolean}
+   * @description Clicks the next button.
+   */
+  BM.prototype.next = function next() {
+    return this._currentPlayerState().active && click(window.document.getElementById('t-next'));
+  };
+
+  /** 
+   * @return {boolean}
+   * @description Clicks the prev button.
+   */
+  BM.prototype.prev = function prev() {
+    return this._currentPlayerState().active && click(window.document.getElementById('t-prev'));
+  };
+
+  /**
+   * @return {boolean}
+   * @description Checks if the player is playing.
+   */
+  BM.prototype.isPlaying = function isPlaying() {
+    return this._currentPlayerState().playing;
+  };
+
+  /** 
+   * @return {boolean}
+   * @description Clicks the play/pause button.
+   */
+  BM.prototype.playPause = function playPause() {
+    return this._currentPlayerState().active && click(window.document.getElementById('t-play'));
+  };
+
+  /**
+   * @typedef {Object} BM~playerState
+   * @property {boolean} active
+   * @property {boolean} playing
+   * @property {?string} trackId
+   */
+
+  /**
+   * @return {BM~playerState}
+   * @description Returns the current state of the player.
+   */
+  BM.prototype._currentPlayerState = function _currentPlayerState() {
+    /** @type {BM~playerState} */
+    var state = {
+      active: false,
+      playing: false,
+      trackId: null
+    };
+
+    // If there's no .transport, the player is not initialized yet.
+    if (!window.document.getElementsByClassName('transport').length) {
+      return state; // false & null
+    }
+
+    // If there is .transport but also .transport--hidden, the player never played anything yet.
+    if (window.document.getElementsByClassName('transport--hidden').length) {
+      return state; // false & null
+    }
+
+    // It seems the player is ready.
+    state.active = true;
+
+    // Parse localStorage for info.
+    try {
+      var player = JSON.parse(this._localStorage.player);
+      state.playing = !!(player.playing && !player.paused);
+      state.trackId = player.trackId || null;
+    } catch (e) {}
+
+    return state;
+  };
+
+  /**
+   * @return {boolean}
+   * @description Replaces history state to the given URL.
+   */
+  BM.prototype.navigateTo = function navigateTo(url) {
+    if (typeof url != 'string') {
+      return false; 
+    }
+
+    try {
+      this._history.replaceState(null, null, url);
+      return this._dispatchEvent.call(window, new Event('popstate'));
+    } catch (e) {
+      return false;
+    }
+  };
+
   /** 
    * @return {boolean}
    * @description Clicks the search button.
@@ -643,30 +678,6 @@
    */
   BM.prototype.hate = function hate() {
     return this._currentPlayerState().active && click(window.document.getElementById('t-hate'));
-  };
-
-  /** 
-   * @return {boolean}
-   * @description Clicks the prev button.
-   */
-  BM.prototype.prev = function prev() {
-    return this._currentPlayerState().active && click(window.document.getElementById('t-prev'));
-  };
-
-  /** 
-   * @return {boolean}
-   * @description Clicks the next button.
-   */
-  BM.prototype.next = function next() {
-    return this._currentPlayerState().active && click(window.document.getElementById('t-next'));
-  };
-
-  /** 
-   * @return {boolean}
-   * @description Clicks the play/pause button.
-   */
-  BM.prototype.playPause = function playPause() {
-    return this._currentPlayerState().active && click(window.document.getElementById('t-play'));
   };
 
   /** 
@@ -720,71 +731,60 @@
   };
 
   /**
-   * @typedef {Object} BM~playerState
-   * @property {boolean} active
-   * @property {boolean} playing
-   * @property {?string} trackId
+   * @typedef {Object} BM~ajax
+   * @property {?string} type
+   * @property {string} url
+   * @property {?Object.<string, string>} data
+   * @property {?Object.<string, string>} headers
    */
 
   /**
-   * @return {BM~playerState}
-   * @description Returns the current state of the player.
+   * @param {BM~ajax} settings
+   * @return {?Object}
+   * @description Sends a synchronous XHR request and returns the response. nil if the request failed or the response is not JSON.
    */
-  BM.prototype._currentPlayerState = function _currentPlayerState() {
-    /** @type {BM~playerState} */
-    var state = {
-      active: false,
-      playing: false,
-      trackId: null
-    };
+  BM.prototype._ajax = function _ajax(settings) {
+    settings = settings || {};
 
-    // If there's no .transport, the player is not initialized yet.
-    if (!window.document.getElementsByClassName('transport').length) {
-      return state; // false & null
+    if (!settings.url) {
+      return null;
     }
 
-    // If there is .transport but also .transport--hidden, the player never played anything yet.
-    if (window.document.getElementsByClassName('transport--hidden').length) {
-      return state; // false & null
+    var _open = this._open || window.XMLHttpRequest.prototype.open,
+        type = (settings.type && settings.type.toUpperCase()) || 'GET',
+        url = settings.url + '',
+        data = JSON.stringify(settings.data || undefined) || undefined,
+        headers = settings.headers || {},
+        request = new window.XMLHttpRequest;
+
+    // Necessary settings.
+    headers['Accept'] = 'application/json, text/javascript, */*; q=0.01';
+    if (data) {
+      headers['Content-Type'] = 'application/json';
     }
 
-    // It seems the player is ready.
-    state.active = true;
+    // Open!
+    _open.call(request, type, url, false);
 
-    // Parse localStorage for info.
-    try {
-      var player = JSON.parse(this._localStorage.player);
-      state.playing = !!(player.playing && !player.paused);
-      state.trackId = player.trackId || null;
-    } catch (e) {}
-
-    return state;
-  };
-
-  /**
-   * @return {boolean}
-   * @description Checks if the player is playing.
-   */
-  BM.prototype.isPlaying = function isPlaying() {
-    return this._currentPlayerState().playing;
-  };
-
-  /**
-   * @return {boolean}
-   * @description Replaces history state to the given URL.
-   */
-  BM.prototype.navigateTo = function navigateTo(url) {
-    if (typeof url != 'string') {
-      return false; 
+    // Assign headers.
+    for(var key in headers) {
+      request.setRequestHeader(key, headers[key]);
     }
 
-    try {
-      this._history.replaceState(null, null, url);
-      return this._dispatchEvent.call(window, new Event('popstate'));
-    } catch (e) {
-      return false;
+    // Send data.
+    request.send(data);
+
+    // Parse the response.
+    if (request.readyState == 4 && request.status == 200) {
+      try {
+        return JSON.parse(request.responseText);
+      } catch (e) {
+        return null;
+      }
+    } else {
+      return null;
     }
-  };
+  }
 
   /**
    * @return {boolean}
