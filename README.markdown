@@ -1,3 +1,5 @@
+> __BeotsMusic__ has been discontinued as _[Beats Music](http://beatsmusic.com)_ is now _[Apple Music](http://www.apple.com/music)_.
+
 ## What's BeotsMusic?
 
 BeotsMusic is a Mac OS X application which brings __[Beats Music](http://beatsmusic.com)__ to the desktop without using a browser.
